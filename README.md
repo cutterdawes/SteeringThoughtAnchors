@@ -1,6 +1,7 @@
 # Project: Steering Thought Anchors
 
 **Cutter Dawes, Santiago Aranguri**
+
 Previous work has found evidence of “thought anchors”, reasoning steps that have outsized importance for downstream steps in the model’s chain of thought (CoT; Bogdan+ 2025); separately, others have experimented with steering the CoT towards specific reasoning behaviors, such as backtracking (Venhoff+ 2025). Here, I propose that we apply CoT steering to thought anchors, in order to study their emergence and downstream importance. To investigate, we might steer activations at two points relative to a given thought anchor: just before, to measure the spontaneity of its emergence; and immediately after, to measure the durability of its downstream importance. For both cases, the steering vector could be constructed by subtracting the average activation of sampled counterfactual sentences from the activation of the thought anchor. This research idea directly probes the transience of thought: do we see thought anchors arise smoothly with translations in activation space, or are there phase transitions in which thought anchors (and their downstream impacts on CoT) spontaneously emerge and disappear?
 
 ## Background
