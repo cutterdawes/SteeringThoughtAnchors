@@ -1,0 +1,11 @@
+*.pkl
+*.json
+*.zip
+*.png
+*.npy
+*.pyc
+plots/*
+math-rollouts/
+math-rollouts_test/
+.cursorindexingignore
+.specstory
