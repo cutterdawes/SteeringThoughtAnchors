@@ -2,7 +2,7 @@
 import torch
 import matplotlib.pyplot as plt
 import argparse
-from utils import utils
+from . import utils
 import seaborn as sns
 
 # Set the style for all plots

@@ -170,7 +170,7 @@ def get_label_positions(annotated_thinking, response_text, tokenizer):
     label_positions = {}
     
     # Use a pattern that captures labeled segments in the format [category-name] text [end-section]
-    pattern = r'\["(\S+?)"\](.*?)\["end-section"\]'
+    pattern = r'\\["(\S+?)\"\\](.*?)\\["end-section"\\]'
     matches = list(re.finditer(pattern, annotated_thinking, re.DOTALL))
     
     # Create character to token mapping once
@@ -353,19 +353,19 @@ def process_batch_annotations(thinking_processes):
     
     return annotated_responses
 
-def get_batched_message_ids(tokenizer, messages_list):
+def get_batched_message_ids(tokenizer, messages_list, device):
     # First get the max length by encoding each message individually
     max_token_length = max([len(tokenizer.encode(msg, return_tensors="pt")[0]) for msg in messages_list])
     input_ids = torch.cat([
-        tokenizer.encode(msg, padding="max_length", max_length=max_token_length, return_tensors="pt").to("cuda") 
+        tokenizer.encode(msg, padding="max_length", max_length=max_token_length, return_tensors="pt").to(device) 
         for msg in messages_list
     ])
 
     return input_ids
 
-def process_saved_responses_batch(responses_list, tokenizer, model):
+def process_saved_responses_batch(responses_list, tokenizer, model, device):
     """Get layer activations for a batch of saved responses without generation"""
-    tokenized_responses = get_batched_message_ids(tokenizer, responses_list)
+    tokenized_responses = get_batched_message_ids(tokenizer, responses_list, device)
     
     # Process the inputs through the model to get activations
     layer_outputs = []
@@ -380,7 +380,7 @@ def process_saved_responses_batch(responses_list, tokenizer, model):
         for layer_idx in range(model.config.num_hidden_layers):
             layer_outputs.append(model.model.layers[layer_idx].output[0].save())
     
-    layer_outputs = [x.value.cpu().detach().to(torch.float32) for x in layer_outputs]
+    layer_outputs = [x.cpu().detach().to(torch.float32) for x in layer_outputs]
 
     batch_layer_outputs = []
     
@@ -398,6 +398,28 @@ def process_saved_responses_batch(responses_list, tokenizer, model):
         batch_layer_outputs.append(example_outputs)
     
     return batch_layer_outputs
+
+    generated_text = response_text[prompt_len:].strip()
+
+    cot = ""
+    answer = generated_text
+
+    # Check for <think> tags
+    think_start_tag = "<think>"
+    think_end_tag = "</think>"
+
+    think_start_idx = generated_text.find(think_start_tag)
+    think_end_idx = generated_text.find(think_end_tag)
+
+    if think_start_idx != -1 and think_end_idx != -1 and think_end_idx > think_start_idx:
+        cot = generated_text[think_start_idx + len(think_start_tag) : think_end_idx].strip()
+        # The answer is everything after the </think> tag
+        answer = generated_text[think_end_idx + len(think_end_tag) :].strip()
+    elif think_start_idx != -1 and think_end_idx == -1: # If only start tag is present
+        cot = generated_text[think_start_idx + len(think_start_tag) :].strip()
+        answer = "" # No clear answer if </think> is missing
+    
+    return cot, answer
 
 steering_config = {
     "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B": {
