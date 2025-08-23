@@ -232,6 +232,13 @@ def load_model_and_vectors(device="cuda:0", load_in_8bit=False, compute_features
     # Configure compilation behavior before constructing the model
     _configure_nnsight_compile(device)
     model = LanguageModel(model_name, dispatch=True, load_in_8bit=load_in_8bit, device_map=device, torch_dtype=torch.bfloat16)
+    # Explicitly disable compile config on unsupported devices to silence warnings
+    try:
+        if not (isinstance(device, str) and device.lower().startswith("cuda")):
+            if hasattr(model, "compile_config"):
+                model.compile_config = None
+    except Exception:
+        pass
     
     model.generation_config.temperature=None
     model.generation_config.top_p=None
@@ -245,6 +252,12 @@ def load_model_and_vectors(device="cuda:0", load_in_8bit=False, compute_features
 
     if base_model_name is not None:
         base_model = LanguageModel(base_model_name, dispatch=True, load_in_8bit=load_in_8bit, device_map=device, torch_dtype=torch.bfloat16)
+        try:
+            if not (isinstance(device, str) and device.lower().startswith("cuda")):
+                if hasattr(base_model, "compile_config"):
+                    base_model.compile_config = None
+        except Exception:
+            pass
     
         base_model.generation_config.temperature=None
         base_model.generation_config.top_p=None
@@ -1266,7 +1279,11 @@ def get_latex_equivalent(answer0, answer1):
         True if expressions are mathematically equivalent, False otherwise
     """
     try:
-        from sympy.parsing.latex import parse_latex
+        import warnings
+        # Suppress antlr-related UserWarnings if antlr4 runtime isn't installed
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", message="antlr4.error.ErrorListener module is not installed")
+            from sympy.parsing.latex import parse_latex
         import sympy
 
         # Clean up the LaTeX expressions for parsing

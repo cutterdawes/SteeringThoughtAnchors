@@ -1,0 +1,57 @@
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Python cache and bytecode
+# ignore any __pycache__ directory anywhere in the tree
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+env/
+venv/
+.venv/
+ENV/
+env.bak/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+pip-wheel-metadata/
+
+# Jupyter
+# ignore Jupyter checkpoints anywhere in the repo
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
+# pytest cache
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+
+# Coverage
+.coverage
+htmlcov/
+
+# Logs
+*.log
+logs/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.iml
+
+# Environment variables
+.env
+.env.*
+
+# C extensions
+*.so
+
+# macOS file metadata
+Icon\r

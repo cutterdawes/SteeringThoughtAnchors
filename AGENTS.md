@@ -17,6 +17,7 @@
 - Find vectors: `python experiments/find_steering_vectors.py` (writes vector JSON).
 - Tests (if added): `pytest -q`.
 Notes:
+- Always activate the conda env before running any script: `conda activate steering-thought-anchors`.
 - Scripts assume Python path includes repo root; they already append it. Avoid hard‑coded absolute paths when adding new code.
 - API keys can be provided via shell env or a `.env`; current code loads env vars if present.
 
@@ -44,4 +45,3 @@ Notes:
 - Set provider keys via env: `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `OPENROUTER_API_KEY`.
 - Keep `.env` files out of version control; export in shell during development.
 - When adding models, use explicit names (e.g., `deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B`) and avoid silently changing defaults.
-

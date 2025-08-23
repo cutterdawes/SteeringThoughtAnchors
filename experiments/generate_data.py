@@ -11,7 +11,6 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from utils import (
     load_model_and_vectors,
-    process_saved_responses_batch,
     extract_thinking_process_and_answer,
     load_math_problems,
 )
@@ -124,21 +123,12 @@ Think carefully and show your reasoning. At the end, provide the final answer en
             if forced_answer:
                 answer = forced_answer
 
-        # Get activations using process_saved_responses_batch
-        activations_list = process_saved_responses_batch([response], tokenizer, model, device) 
-        
-        serializable_activations = {}
-        if activations_list:
-            for layer_id in range(activations_list[0].shape[0]):
-                serializable_activations[layer_id] = activations_list[0][layer_id].cpu().numpy().tolist()
-
         record = {
             "prompt": original_question,
             "model_input_prompt": prompt_string_for_model,
             "raw_response": response,
             "cot": cot,
             "answer": answer,
-            "activations": serializable_activations,
         }
         record["gt_answer"] = gt_answer or ""
         record["gt_solution"] = gt_solution or ""
@@ -161,14 +151,72 @@ Think carefully and show your reasoning. At the end, provide the final answer en
         print(f"Saved ground-truth answers to {gt_file}")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Generate (prompt, CoT, answer, activations) tuples from MATH dataset.")
-    parser.add_argument("--model", type=str, default="deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B")
-    parser.add_argument("--output", type=str, default="generated_data")
-    parser.add_argument("--count", type=int, default=1)
-    parser.add_argument("--math_split", type=str, default="test")
-    parser.add_argument("--math_count", type=int, default=None)
-    parser.add_argument("--math_level", type=str, default=None)
-    parser.add_argument("--math_type", type=str, default=None)
+    parser = argparse.ArgumentParser(
+        description=(
+            "Generate a dataset of (prompt, CoT, answer) tuples from the MATH dataset. "
+            "Also writes a prompt→ground‑truth mapping to ground_truth_math.json."
+        )
+    )
+    parser.add_argument(
+        "--model",
+        type=str,
+        default="deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
+        help=(
+            "Hugging Face model id to use for generation (thinking model recommended). "
+            "Examples: deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B."
+        ),
+    )
+    parser.add_argument(
+        "--output",
+        type=str,
+        default="generated_data",
+        help=(
+            "Directory to write outputs. Saves generated_data_{model}.json and "
+            "ground_truth_math.json here."
+        ),
+    )
+    parser.add_argument(
+        "--count",
+        type=int,
+        default=1,
+        help=(
+            "Number of problems to generate in this run (upper bound over the loaded MATH problems)."
+        ),
+    )
+    parser.add_argument(
+        "--math_split",
+        type=str,
+        default="test",
+        choices=["train", "test"],
+        help="Dataset split from MATH to sample problems from (train or test).",
+    )
+    parser.add_argument(
+        "--math_count",
+        type=int,
+        default=None,
+        help=(
+            "How many MATH problems to fetch before generation (random sample). "
+            "If omitted, uses all available in the chosen split."
+        ),
+    )
+    parser.add_argument(
+        "--math_level",
+        type=str,
+        default=None,
+        help=(
+            "Optional difficulty filter for MATH (e.g., level1…level5). If set, only problems "
+            "with this level are considered."
+        ),
+    )
+    parser.add_argument(
+        "--math_type",
+        type=str,
+        default=None,
+        help=(
+            "Optional topic/category filter for MATH (e.g., algebra, number_theory). If set, only "
+            "problems with this type are considered."
+        ),
+    )
     args = parser.parse_args()
 
     generate_data(

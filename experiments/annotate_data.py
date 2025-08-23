@@ -333,6 +333,13 @@ def annotate_data_with_thought_anchors(
         anchor_idx = cf_importance_kl.index(max_imp) if cf_importance_kl else None
         anchor_sentence = sentences[anchor_idx] if anchor_idx is not None else ""
 
+        # Drop any saved activations from upstream dataset; we don't persist activations here
+        if 'activations' in data_point:
+            try:
+                del data_point['activations']
+            except Exception:
+                pass
+
         data_point['thought_anchor_idx'] = anchor_idx
         data_point['thought_anchor_sentence'] = anchor_sentence
         data_point['baseline_accuracy'] = base_accuracy
@@ -353,14 +360,81 @@ def annotate_data_with_thought_anchors(
 
 if __name__ == "__main__":
     # CLI for faster testing and control
-    parser = argparse.ArgumentParser(description="Annotate thought anchors with counterfactual importance.")
-    parser.add_argument("--model", type=str, default="deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B")
-    parser.add_argument("--max_examples", type=int, default=None)
-    parser.add_argument("--max_sentences", type=int, default=None)
-    parser.add_argument("--max_new_tokens_forced", type=int, default=128)
-    parser.add_argument("--resamples", type=int, default=10, help="Number of resamples per condition")
-    parser.add_argument("--no_abs_importance", action="store_true", help="Use signed importance instead of absolute")
-    parser.add_argument("--ground_truth_json", type=str, default=None, help="Optional JSON mapping {prompt: gt_answer}")
+    parser = argparse.ArgumentParser(
+        description=(
+            "Annotate thought-anchor sentences using counterfactual removal tests. "
+            "For each CoT chunk the script removes that chunk, resamples continuations, "
+            "and measures how often the final boxed answer changes — the sentence that most "
+            "often changes the answer is recorded as the thought anchor."
+        )
+    )
+    parser.add_argument(
+        "--model",
+        type=str,
+        default="deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
+        help=(
+            "Hugging Face model id used for the counterfactual tests. "
+            "Must match the model used to generate the input file so the script can locate "
+            "`generated_data/generated_data_{model.replace('/', '-')}.json`. "
+            "Default: deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B."
+        ),
+    )
+    parser.add_argument(
+        "--max_examples",
+        type=int,
+        default=None,
+        help=(
+            "Limit processing to the first N examples in the input file (useful for quick tests). "
+            "If omitted, the script processes all examples."
+        ),
+    )
+    parser.add_argument(
+        "--max_sentences",
+        type=int,
+        default=None,
+        help=(
+            "Limit how many CoT sentences (chunks) to consider per example. "
+            "If set, only the first N chunks are evaluated; otherwise all chunks are used."
+        ),
+    )
+    parser.add_argument(
+        "--max_new_tokens_forced",
+        type=int,
+        default=128,
+        help=(
+            "Maximum number of tokens to generate when performing forced-answer completions. "
+            "Used for computing baseline and counterfactual boxed answers; larger values may capture "
+            "longer boxed answers but cost more time. Default: 128."
+        ),
+    )
+    parser.add_argument(
+        "--resamples",
+        type=int,
+        default=10,
+        help=(
+            "Number of stochastic resamples to draw per removal condition (per chunk). "
+            "Higher values produce more stable importance estimates but increase runtime linearly. "
+            "Default: 10."
+        ),
+    )
+    parser.add_argument(
+        "--no_abs_importance",
+        action="store_true",
+        help=(
+            "When set, compute signed importance values instead of absolute importance. "
+            "By default the script uses absolute importance (magnitude) for selecting anchors."
+        ),
+    )
+    parser.add_argument(
+        "--ground_truth_json",
+        type=str,
+        default=None,
+        help=(
+            "Optional path to a JSON file mapping {prompt: ground-truth-answer}. "
+            "If provided, correctness will be computed against this mapping; otherwise the script "
+            "will attempt to auto-detect `generated_data/ground_truth_math.json`."
+        ),
+    )
     args = parser.parse_args()
 
     model_name = args.model
