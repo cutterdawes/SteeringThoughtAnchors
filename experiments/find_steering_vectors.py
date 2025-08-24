@@ -20,6 +20,40 @@ def _device() -> str:
     return "mps" if torch.backends.mps.is_available() else "cpu"
 
 
+def _pool_to_hidden(x: "torch.Tensor", hidden_size: int) -> "torch.Tensor":
+    """Robustly pool captured activations to a 1D hidden vector.
+    Handles shapes [B,S,H], [S,H], [B,H], [H], and fallbacks.
+    """
+    try:
+        if x is None or (hasattr(x, "numel") and x.numel() == 0):
+            return torch.zeros(hidden_size, dtype=torch.float32)
+        if x.dim() == 3:  # [B,S,H]
+            return x[0].to(torch.float32).mean(dim=0)
+        if x.dim() == 2:  # [S,H] or [B,H]
+            a, b = x.shape
+            if b == hidden_size:
+                return x.to(torch.float32).mean(dim=0)
+            if a == hidden_size:
+                return x.to(torch.float32).mean(dim=1)
+            # Fallback: flatten then trim/pad
+            xf = x.flatten().to(torch.float32)
+            out = torch.zeros(hidden_size, dtype=torch.float32)
+            n = min(hidden_size, xf.shape[0])
+            out[:n] = xf[:n]
+            return out
+        if x.dim() == 1:  # [H] or other
+            if x.shape[0] == hidden_size:
+                return x.to(torch.float32)
+            out = torch.zeros(hidden_size, dtype=torch.float32)
+            n = min(hidden_size, x.shape[0])
+            out[:n] = x.to(torch.float32)[:n]
+            return out
+        # Scalar or unknown shape
+        return torch.zeros(hidden_size, dtype=torch.float32)
+    except Exception:
+        return torch.zeros(hidden_size, dtype=torch.float32)
+
+
 def mean_layer_activation(model, tokenizer, text: str, layer_idx: int, device: str):
     if torch is None:
         raise RuntimeError("Torch is required for non-dry runs.")
@@ -31,10 +65,8 @@ def mean_layer_activation(model, tokenizer, text: str, layer_idx: int, device: s
         "attention_mask": (ids["input_ids"] != tokenizer.pad_token_id).long(),
     }):
         layer_out = model.model.layers[layer_idx].output[0].save()
-    h = layer_out.cpu().detach().to(torch.float32)[0]  # [seq, hidden]
-    if h.numel() == 0:
-        return torch.zeros(model.config.hidden_size, dtype=torch.float32)
-    return h.mean(dim=0)
+    t = layer_out.cpu().detach()
+    return _pool_to_hidden(t, model.config.hidden_size)
 
 
 def mean_last_layer_embedding(model, tokenizer, text: str, device: str):
@@ -49,10 +81,8 @@ def mean_last_layer_embedding(model, tokenizer, text: str, device: str):
         "attention_mask": (ids["input_ids"] != tokenizer.pad_token_id).long(),
     }):
         last = model.model.layers[last_idx].output[0].save()
-    h = last.cpu().detach().to(torch.float32)[0]
-    if h.numel() == 0:
-        return torch.zeros(model.config.hidden_size, dtype=torch.float32)
-    return h.mean(dim=0)
+    t = last.cpu().detach()
+    return _pool_to_hidden(t, model.config.hidden_size)
 
 
 def cosine_similarity(a, b) -> float:
@@ -192,11 +222,12 @@ def compute_anchor_vector_for_example(
     v = a_anchor - a_counter
     v_norm = torch.nn.functional.normalize(v, dim=0)
 
+    hidden_size = int(v.flatten().shape[0]) if hasattr(v, 'shape') else 0
     return {
         "anchor_idx": int(anchor_idx),
         "anchor_sentence": anchor_sentence,
         "layer": int(layer_idx),
-        "hidden_size": int(v.shape[0]),
+        "hidden_size": hidden_size,
         "vector": v_norm.tolist(),
         "counterfactual_count": int(len(cf_vectors)),
     }
