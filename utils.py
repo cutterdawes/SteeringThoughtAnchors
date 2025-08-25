@@ -723,6 +723,10 @@ def check_answer(answer: str, gt_answer: str) -> bool:
     Returns:
         True if the answers match after normalization, False otherwise
     """
+    # Factorial-aware punctuation cleanup prior to normalization
+    answer = cleanup_answer_punctuation(answer, gt_answer)
+    gt_answer = cleanup_answer_punctuation(gt_answer, gt_answer)
+
     # Normalize both answers
     normalized_answer = normalize_latex(answer)
     normalized_gt_answer = normalize_latex(gt_answer)
@@ -850,11 +854,38 @@ def normalize_latex(latex_str: str) -> str:
     normalized = re.sub(r"\\text\{([^{}]+)" + "}", r"\1", normalized)
     normalized = re.sub(r"\\mathrm\{([^{}]+)" + "}", r"\1", normalized)
 
+    # Punctuation cleanup (general):
+    # - Collapse runs of '!' to a single '!'
+    # - Remove trailing '.', '?', or ellipsis characters
+    normalized = re.sub(r"!{2,}", "!", normalized)
+    normalized = re.sub(r"[\.\?…]+$", "", normalized)
+
     # Normalize date formats (e.g., "October 30" vs "October\ 30")
     normalized = re.sub(r"([a-z]+)\\+\s*(\d+)", r"\1\2", normalized)
     normalized = normalized.replace("\\text", "")
 
     return normalized
+
+
+def cleanup_answer_punctuation(answer: str, gt_answer: Optional[str] = None) -> str:
+    """
+    Clean punctuation artifacts from model answers.
+
+    - If ground truth has no factorial ('!'), remove all '!' from the candidate.
+    - If GT has a factorial, collapse repeated '!' runs to a single '!'.
+    - Remove trailing '.', '?', and ellipsis characters.
+    """
+    if answer is None:
+        return ""
+    s = str(answer)
+    # Trailing sentence punctuation
+    s = re.sub(r"[\.\?…]+$", "", s)
+    gt_has_factorial = bool(gt_answer and ('!' in str(gt_answer)))
+    if gt_has_factorial:
+        s = re.sub(r"!{2,}", "!", s)
+    else:
+        s = s.replace("!", "")
+    return s
 
 
 def split_solution_keep_spacing(solution_text: str) -> List[str]:

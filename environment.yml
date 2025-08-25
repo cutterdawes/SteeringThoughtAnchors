@@ -1,4 +1,4 @@
-name: steering-thought-anchors
+name: anchorsteering
 channels:
   - conda-forge
   - defaults

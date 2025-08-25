@@ -54,28 +54,6 @@ from utils import (
 )
 
 
-def split_sentences(text: str) -> List[str]:
-    text = (text or "").strip()
-    if not text:
-        return []
-    # Simple sentence splitter on ., !, ? followed by space or end
-    parts = re.split(r'(?<=[.!?])\s+', text)
-    # Filter empty
-    return [p.strip() for p in parts if p.strip()]
-
-
-def normalize_answer(ans: str) -> str:
-    # Lightweight normalization for comparison
-    if ans is None:
-        return ""
-    s = ans.strip()
-    # Remove surrounding LaTeX math markers and spaces
-    s = re.sub(r"\\boxed\{(.*)\}$", r"\1", s)
-    s = s.replace("$", "")
-    s = re.sub(r"\s+", " ", s)
-    return s
-
-
 def generate_forced_answer(
     model,
     tokenizer,
@@ -152,7 +130,9 @@ def generate_open_rollout_and_answer(
     do_sample: bool = True,
     temperature: float = 0.7,
     top_p: float = 0.9,
-    variation_seed: Optional[int] = None,
+    variation_seed: Optional[int] = None,  # reserved; sampler randomness is controlled via HF sampling params
+    max_new_tokens_open: int = 256,
+    max_new_tokens_forced: int = 128,
 ) -> Tuple[str, str]:
     prompt = (
         "Solve the following problem step by step. You MUST put your final answer in \\boxed{}.\n\n"
@@ -163,7 +143,7 @@ def generate_open_rollout_and_answer(
     gen_kwargs = dict(
         input_ids=ids["input_ids"],
         attention_mask=(ids["input_ids"] != tokenizer.pad_token_id).long(),
-        max_new_tokens=256,
+        max_new_tokens=max(1, int(max_new_tokens_open)),
         do_sample=do_sample,
         pad_token_id=tokenizer.pad_token_id,
     )
@@ -184,6 +164,21 @@ def generate_open_rollout_and_answer(
     except Exception:
         boxes = []
     ans = boxes[0] if boxes else ""
+    # Forced-answer fallback to mirror base generation if no boxed answer was found
+    if not ans:
+        # Use the entire open continuation for the forced fallback to increase parity
+        combined_cot = (prefix_text or "").rstrip() + ("\n" if prefix_text else "") + (rollout_text or "")
+        _cot2, forced_ans = generate_forced_answer(
+            model,
+            tokenizer,
+            question,
+            combined_cot,
+            device,
+            max_new_tokens=max_new_tokens_forced,
+            do_sample=False,
+        )
+        if forced_ans:
+            ans = forced_ans
     return resampled_chunk, ans
 
 def calculate_kl_divergence(
@@ -328,10 +323,19 @@ def annotate_data_with_thought_anchors(
             removed_text = sentences[idx]
             removed_embed = removed_embeds[idx]
             sols: List[Dict] = []
+            # Compute token budget so that prefix CoT + new tokens <= 1000
+            try:
+                prefix_ids = tokenizer(prefix_text, return_tensors="pt", add_special_tokens=False)["input_ids"]
+                prefix_tokens = int(prefix_ids.shape[-1])
+            except Exception:
+                prefix_tokens = 0
+            remaining_budget = max(1, 1000 - prefix_tokens)
             for r in range(resamples):
                 resampled_chunk, a = generate_open_rollout_and_answer(
                     model, tokenizer, question, prefix_text, model.device,
                     do_sample=True, temperature=0.7, top_p=0.9, variation_seed=r,
+                    max_new_tokens_open=remaining_budget,
+                    max_new_tokens_forced=max_new_tokens_forced,
                 )
                 sim = cosine_similarity(removed_embed, embed_text_with_model(model, tokenizer, resampled_chunk, model.device))
                 sols.append({
@@ -354,16 +358,17 @@ def annotate_data_with_thought_anchors(
             overdet = 1.0 - (len(set(texts)) / len(texts)) if texts else 0.0
             overdeterminedness.append(overdet)
             comparator = next_solutions + similar if next_solutions else similar
+            # Always compute per-chunk accuracy from current resamples
+            acc = sum(1 for s in current if s.get("is_correct", False)) / max(1, len(current)) if current else 0.0
+            cf_accuracies.append(acc)
+            cf_answers.append(current[0].get("answer", "") if current else "")
+            # KL requires non-empty partitions; warn if missing
             if not dissimilar or not comparator:
+                print(f"[warn] Empty similarity partition(s) at chunk {idx}: dissimilar={len(dissimilar)}, comparator={len(comparator)}")
                 cf_importance_kl.append(0.0)
-                cf_accuracies.append(base_accuracy)
-                cf_answers.append(current[0].get("answer", "") if current else "")
             else:
                 kl = calculate_kl_divergence(dissimilar, comparator, laplace_smooth=True, use_prob_true=True)
                 cf_importance_kl.append(kl)
-                acc = sum(1 for s in current if s.get("is_correct", False)) / max(1, len(current))
-                cf_accuracies.append(acc)
-                cf_answers.append(current[0].get("answer", ""))
 
         # Select anchor as first max score
         max_imp = max(cf_importance_kl) if cf_importance_kl else 0.0

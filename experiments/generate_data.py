@@ -19,14 +19,12 @@ For more details and a cross‑repo comparison, see docs/IMPLEMENTATION_NOTES.md
 """
 
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
 import json
 import os
-import sys
 import re
 import argparse
 
-# Add the steering-thinking-llms directory to the Python path
+# Add the repo root to the Python path
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from utils import (
@@ -142,6 +140,13 @@ Think carefully and show your reasoning. At the end, provide the final answer en
             _, forced_answer = extract_thinking_process_and_answer(forced_text, prompt_len=0)
             if forced_answer:
                 answer = forced_answer
+
+        # Punctuation cleanup aligned with normalization and factorial handling
+        try:
+            from utils import cleanup_answer_punctuation as _cleanup
+            answer = _cleanup(answer, gt_answer)
+        except Exception:
+            pass
 
         record = {
             "prompt": original_question,
