@@ -1,3 +1,23 @@
+"""
+Experiment 1: Data Generation
+
+This script generates a dataset of (prompt, CoT, answer) tuples from the MATH
+dataset using a "thinking" model (e.g., deepseek‑ai/DeepSeek‑R1‑Distill‑Qwen‑1.5B).
+
+Notes and implementation choices vs. references:
+- Prompting: We apply the chat template and expect models that insert a
+  "<think>\n" prefix before thoughts. We compute `prompt_len` by subtracting
+  the length of this tokenized prefix so that downstream parsing can isolate
+  the generated portion. This behavior is model‑specific and differs from
+  some reference repos that use fixed, plain prompts without chat templates.
+- Outputs: We only persist prompt, raw response, extracted CoT and final
+  boxed answer (and optional ground‑truth). We do not persist per‑token
+  activations or rollout artifacts here (those are generated later or in
+  separate experiments in the reference repos).
+
+For more details and a cross‑repo comparison, see docs/IMPLEMENTATION_NOTES.md.
+"""
+
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import json

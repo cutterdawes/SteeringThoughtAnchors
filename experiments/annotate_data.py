@@ -1,3 +1,38 @@
+"""
+Experiment 2: Annotation of Thought Anchors
+
+This script annotates each (prompt, CoT, answer) example with a single
+"thought anchor" sentence — the sentence whose removal most disrupts the
+final answer behavior.
+
+Method summary (our implementation vs. references):
+- We split the CoT into sentence/paragraph chunks (prompt excluded) using
+  TA‑style chunking from utils.split_solution_into_chunks.
+- For each sentence i, we remove it and generate multiple stochastic
+  continuations from the prefix up to i. We mark each rollout as correct or
+  incorrect relative to a ground truth (dataset GT if available; otherwise
+  a pseudo‑GT derived from baseline forced answers on the original CoT).
+- We embed the removed sentence and the first resampled sentence using the
+  model’s last‑layer mean hidden states (via nnsight). We label a resample as
+  "dissimilar" if cosine < 0.8; otherwise it is considered "similar".
+- Importance score (selection): KL divergence between the correctness
+  distribution of dissimilar resamples and a comparator built from the set of
+  similar resamples plus the next‑sentence (i+1) rollouts when available.
+  The sentence with maximum KL is chosen as the thought anchor.
+
+Key differences from refs/thought‑anchors:
+- Similarity backend: The paper/code uses SentenceTransformer embeddings
+  (e.g., all‑MiniLM); we use the reasoning model’s last‑layer embeddings.
+- KL over correctness: We compute KL over {true,false} distributions by
+  default (use_prob_true=True) with Laplace smoothing. The reference code
+  frequently uses answer‑distribution KL and may omit smoothing by default.
+- Metrics scope: We only compute the counterfactual (removal) metrics used
+  for anchor selection. We do not compute or persist the additional
+  resampling/forced importance metrics or per‑chunk rollout artifacts.
+
+For a complete comparison, see docs/IMPLEMENTATION_NOTES.md.
+"""
+
 import json
 import os
 import re
@@ -202,7 +237,9 @@ def annotate_data_with_thought_anchors(
     """
     Annotate thought anchors via a counterfactual removal test per sentence.
     For each CoT sentence, remove it, force a final answer, and mark if the answer changes.
-    The sentence whose removal most often changes the answer (binary here) is the anchor.
+    Anchor selection uses KL divergence on correctness distributions for
+    dissimilar resamples vs. a comparator (similar + next‑sentence). The
+    sentence with maximum KL is selected as the thought anchor.
     """
     print(f"Loading data from {input_data_path} for annotation...")
     with open(input_data_path, 'r') as f:
@@ -421,8 +458,9 @@ if __name__ == "__main__":
         "--no_abs_importance",
         action="store_true",
         help=(
-            "When set, compute signed importance values instead of absolute importance. "
-            "By default the script uses absolute importance (magnitude) for selecting anchors."
+            "Reserved flag (currently a no‑op): in prior iterations this toggled the "
+            "sign of accuracy‑difference importance. We now select anchors solely via KL "
+            "divergence on correctness distributions; this flag does not affect selection."
         ),
     )
     parser.add_argument(

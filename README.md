@@ -41,3 +41,6 @@ Previous work has found evidence of “thought anchors”, reasoning steps that 
 ## Notes
 In general for this project outline, I thought it better to go into too much detail (which we can backtrack) than too little. This is just one research direction based on your Problem 1, and I am open to a variety of other directions—even including starting from scratch—so please don’t be shy to edit and comment as much as you want!
 Also, this idea represents a substantial research project that is likely infeasible for the trial period (through 9/1). As I mentioned, I would rather give too much detail than too little, so I’d love to hear your suggestions on tangible starting points (if you like this idea; if not, feel free to suggest a different starting point). What I’m currently thinking is to start with a relatively simple fixed question, CoT, and thought anchor, and experiment with the ideas above in that limited example. Please let me know what you think!
+
+## Implementation Notes
+For specifics on how our data generation and annotation differ from the reference repositories (Thought Anchors and Steering Thinking LLMs), see `docs/IMPLEMENTATION_NOTES.md`.
