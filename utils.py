@@ -217,6 +217,78 @@ def _configure_nnsight_compile(device: str) -> None:
         pass
 
 
+def _is_nnsight_model(model) -> bool:
+    """Best-effort check whether `model` is an nnsight LanguageModel.
+    We detect attributes used by nnsight such as `generator` and `generate` context manager.
+    """
+    try:
+        return hasattr(model, "generator") and hasattr(model, "generate") and hasattr(model, "model")
+    except Exception:
+        return False
+
+
+def generate_with_model(model, tokenizer, *, input_ids: torch.Tensor, attention_mask: torch.Tensor, **gen_kwargs):
+    """Run text generation robustly across nnsight/HF backends.
+
+    Returns the raw generation output object (tensor-like or ModelOutput). Use
+    `decode_generate_outputs` to obtain text reliably.
+    """
+    if _is_nnsight_model(model):
+        # nnsight path: use context manager and save the generated sequences
+        payload = {"input_ids": input_ids, "attention_mask": attention_mask}
+        try:
+            with model.generate(payload, **gen_kwargs):
+                outputs = model.generator.output.save()
+            return outputs
+        except Exception:
+            # As a fallback, try direct call if available
+            return model.generate(**{**payload, **gen_kwargs})
+    # HF path
+    return model.generate(input_ids=input_ids, attention_mask=attention_mask, **gen_kwargs)
+
+
+def _safe_get_first_sequence(outputs):
+    """Extract the first sequence from various output types.
+    Supports: HF `GenerateOutput` (has `.sequences`), plain tensors/lists, and nnsight saved outputs.
+    """
+    # HF GenerateOutput or similar dataclass
+    if hasattr(outputs, "sequences"):
+        return outputs.sequences[0]
+    # List/tuple of sequences or 2D tensor
+    try:
+        return outputs[0]
+    except Exception:
+        # Some tracer objects may expose `.item()` or similar; give up to caller
+        return outputs
+
+
+def coerce_ids_to_list(ids_like):
+    """Convert a tensor/array-like of token ids to a Python list of ints safely."""
+    try:
+        if hasattr(ids_like, "detach"):
+            return ids_like.detach().to("cpu").to(torch.long).tolist()
+        if hasattr(ids_like, "cpu"):
+            return ids_like.cpu().detach().to(torch.long).tolist()
+        # Iterable fallback
+        return [int(x) for x in list(ids_like)]
+    except Exception:
+        return ids_like
+
+
+def decode_generate_outputs(tokenizer, outputs, *, skip_special_tokens: bool = True) -> str:
+    """Decode the first generated sequence from `outputs` into text robustly."""
+    seq = _safe_get_first_sequence(outputs)
+    try:
+        ids = coerce_ids_to_list(seq)
+        return tokenizer.decode(ids, skip_special_tokens=skip_special_tokens)
+    except Exception:
+        # Last-resort: let tokenizer try to handle raw `seq`
+        try:
+            return tokenizer.decode(seq, skip_special_tokens=skip_special_tokens)
+        except Exception:
+            return ""
+
+
 def load_model_and_vectors(device="cuda:0", load_in_8bit=False, compute_features=True, normalize_features=True, model_name="deepseek-ai/DeepSeek-R1-Distill-Llama-8B", base_model_name=None):
     """
     Load model, tokenizer and mean vectors. Optionally compute feature vectors.

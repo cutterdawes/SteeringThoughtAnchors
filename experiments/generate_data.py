@@ -31,6 +31,8 @@ from utils import (
     load_model_and_vectors,
     extract_thinking_process_and_answer,
     load_math_problems,
+    generate_with_model,
+    decode_generate_outputs,
 )
 
 def generate_data(
@@ -111,9 +113,11 @@ Think carefully and show your reasoning. At the end, provide the final answer en
         raw_responses: list[str] = []
 
         for s in range(max(1, int(samples))):
-            outputs = model.generate(
+            outputs = generate_with_model(
+                model,
+                tokenizer,
                 input_ids=inputs_tensor,
-                attention_mask=(inputs_tensor != tokenizer.pad_token_id).long(), # Manually create attention mask
+                attention_mask=(inputs_tensor != tokenizer.pad_token_id).long(),
                 max_new_tokens=int(max_cot_tokens),
                 num_return_sequences=1,
                 do_sample=True,
@@ -121,12 +125,7 @@ Think carefully and show your reasoning. At the end, provide the final answer en
                 top_p=0.95,
                 pad_token_id=tokenizer.pad_token_id,
             )
-            # Coerce returned ids to integer list to avoid tracer/dtype issues (InterleavingTracer, tensors, lists)
-            try:
-                ids_to_decode = outputs[0].cpu().detach().to(torch.long).tolist() if hasattr(outputs[0], 'cpu') else list(map(int, outputs[0]))
-            except Exception:
-                ids_to_decode = outputs[0]
-            response = tokenizer.decode(ids_to_decode, skip_special_tokens=True)
+            response = decode_generate_outputs(tokenizer, outputs, skip_special_tokens=True)
             cot_s, ans_s = extract_thinking_process_and_answer(response, prompt_len)
             if not ans_s:
                 forced_prefix = (
@@ -135,14 +134,16 @@ Think carefully and show your reasoning. At the end, provide the final answer en
                     f"Solution:\n<think>\n{cot_s}\n</think>\n\nTherefore, the final answer is \\boxed{{"
                 )
                 forced_inputs = tokenizer(forced_prefix, return_tensors="pt").to(model.device)
-                forced_outputs = model.generate(
+                forced_outputs = generate_with_model(
+                    model,
+                    tokenizer,
                     input_ids=forced_inputs["input_ids"],
                     attention_mask=(forced_inputs["input_ids"] != tokenizer.pad_token_id).long(),
                     max_new_tokens=128,
                     do_sample=False,
                     pad_token_id=tokenizer.pad_token_id,
                 )
-                forced_text = tokenizer.decode(forced_outputs[0], skip_special_tokens=True)
+                forced_text = decode_generate_outputs(tokenizer, forced_outputs, skip_special_tokens=True)
                 _, forced_answer = extract_thinking_process_and_answer(forced_text, prompt_len=0)
                 if forced_answer:
                     ans_s = forced_answer

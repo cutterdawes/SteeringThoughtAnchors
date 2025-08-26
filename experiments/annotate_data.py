@@ -51,6 +51,8 @@ from utils import (
     check_answer,
     normalize_answer as utils_normalize_answer,
     split_solution_into_chunks,
+    generate_with_model,
+    decode_generate_outputs,
 )
 
 
@@ -83,17 +85,11 @@ def generate_forced_answer(
     if do_sample:
         gen_kwargs.update(dict(temperature=temperature, top_p=top_p))
     try:
-        outputs = model.generate(**gen_kwargs)
+        outputs = generate_with_model(model, tokenizer, **gen_kwargs)
     except Exception:
-        # Fallback to greedy on any sampling-related errors
         gen_kwargs.update(dict(do_sample=False))
-        outputs = model.generate(**gen_kwargs)
-    # Ensure token ids are integers (some backends return non-int dtypes like bfloat16)
-    try:
-        ids_to_decode = outputs[0].cpu().detach().to(torch.long).tolist() if hasattr(outputs[0], 'cpu') else list(map(int, outputs[0]))
-    except Exception:
-        ids_to_decode = outputs[0]
-    text = tokenizer.decode(ids_to_decode, skip_special_tokens=True)
+        outputs = generate_with_model(model, tokenizer, **gen_kwargs)
+    text = decode_generate_outputs(tokenizer, outputs, skip_special_tokens=True)
     cot, ans = extract_thinking_process_and_answer(text, prompt_len=0)
     return cot, ans
 
@@ -155,16 +151,11 @@ def generate_open_rollout_and_answer(
     if do_sample:
         gen_kwargs.update(dict(temperature=temperature, top_p=top_p))
     try:
-        out_ids = model.generate(**gen_kwargs)
+        out_ids = generate_with_model(model, tokenizer, **gen_kwargs)
     except Exception:
         gen_kwargs.update(dict(do_sample=False))
-        out_ids = model.generate(**gen_kwargs)
-    # Coerce returned ids to integer list to avoid overflow/ dtype issues in the fast tokenizer
-    try:
-        cont_ids = out_ids[0].cpu().detach().to(torch.long).tolist() if hasattr(out_ids[0], 'cpu') else list(map(int, out_ids[0]))
-    except Exception:
-        cont_ids = out_ids[0]
-    cont_text = tokenizer.decode(cont_ids, skip_special_tokens=True)
+        out_ids = generate_with_model(model, tokenizer, **gen_kwargs)
+    cont_text = decode_generate_outputs(tokenizer, out_ids, skip_special_tokens=True)
     rollout_text = cont_text[len(prompt):]
     resampled_chunk = extract_first_sentence(rollout_text)
     # Extract boxed answer from open-ended rollout
