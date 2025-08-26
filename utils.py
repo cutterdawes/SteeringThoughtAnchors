@@ -438,45 +438,6 @@ def process_saved_responses_batch(responses_list, tokenizer, model, device):
     
     return batch_layer_outputs
 
-def extract_boxed_answers(text: str) -> List[str]:
-    """Extract answers enclosed in \boxed{...} with basic brace matching.
-
-    Returns a list of extracted contents; empty list if none.
-    """
-    answers: List[str] = []
-    i = 0
-    n = len(text)
-    target = "\\boxed{"
-    while i < n:
-        j = text.find(target, i)
-        if j == -1:
-            break
-        # position after opening brace
-        k = j + len(target)
-        depth = 1
-        buf = []
-        while k < n and depth > 0:
-            ch = text[k]
-            if ch == '{':
-                depth += 1
-                buf.append(ch)
-            elif ch == '}':
-                depth -= 1
-                if depth > 0:
-                    buf.append(ch)
-            else:
-                buf.append(ch)
-            k += 1
-        # depth reached 0 -> captured one box
-        if depth == 0:
-            answers.append(''.join(buf).strip())
-            i = k
-        else:
-            # unmatched; stop
-            break
-    return answers
-
-
 def extract_thinking_process_and_answer(response_text: str, prompt_len: int) -> Tuple[str, str]:
     generated_text = response_text[prompt_len:].strip()
 

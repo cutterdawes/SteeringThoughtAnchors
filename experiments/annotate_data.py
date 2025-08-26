@@ -88,7 +88,12 @@ def generate_forced_answer(
         # Fallback to greedy on any sampling-related errors
         gen_kwargs.update(dict(do_sample=False))
         outputs = model.generate(**gen_kwargs)
-    text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    # Ensure token ids are integers (some backends return non-int dtypes like bfloat16)
+    try:
+        ids_to_decode = outputs[0].cpu().detach().to(torch.long).tolist() if hasattr(outputs[0], 'cpu') else list(map(int, outputs[0]))
+    except Exception:
+        ids_to_decode = outputs[0]
+    text = tokenizer.decode(ids_to_decode, skip_special_tokens=True)
     cot, ans = extract_thinking_process_and_answer(text, prompt_len=0)
     return cot, ans
 
@@ -154,7 +159,12 @@ def generate_open_rollout_and_answer(
     except Exception:
         gen_kwargs.update(dict(do_sample=False))
         out_ids = model.generate(**gen_kwargs)
-    cont_text = tokenizer.decode(out_ids[0], skip_special_tokens=True)
+    # Coerce returned ids to integer list to avoid overflow/ dtype issues in the fast tokenizer
+    try:
+        cont_ids = out_ids[0].cpu().detach().to(torch.long).tolist() if hasattr(out_ids[0], 'cpu') else list(map(int, out_ids[0]))
+    except Exception:
+        cont_ids = out_ids[0]
+    cont_text = tokenizer.decode(cont_ids, skip_special_tokens=True)
     rollout_text = cont_text[len(prompt):]
     resampled_chunk = extract_first_sentence(rollout_text)
     # Extract boxed answer from open-ended rollout
