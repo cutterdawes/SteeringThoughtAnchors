@@ -1,4 +1,4 @@
-# Project: Steering Thought Anchors
+# Steering Thought Anchors
 
 **Cutter Dawes, Santiago Aranguri**
 
