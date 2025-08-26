@@ -14,7 +14,7 @@ Method summary (our implementation vs. references):
   a pseudo-GT derived from baseline forced answers on the original CoT).
 - We embed the removed sentence and the first resampled sentence using the
   model's last-layer mean hidden states (via nnsight). We label a resample as
-  "dissimilar" if cosine < 0.8; otherwise it is considered "similar".
+  "dissimilar" if cosine < 0.9; otherwise it is considered "similar".
 - Importance score (selection): KL divergence between the correctness
   distribution of dissimilar resamples and a comparator built from the set of
   similar resamples plus the next-sentence (i+1) rollouts when available.
@@ -62,8 +62,8 @@ def generate_forced_answer(
     device: str,
     max_new_tokens: int = 128,
     do_sample: bool = False,
-    temperature: float = 0.7,
-    top_p: float = 0.9,
+    temperature: float = 0.6,
+    top_p: float = 0.95,
     variation_seed: Optional[int] = None,
 ) -> Tuple[str, str]:
     # Build a forced-answer prompt that seeds the CoT and asks for boxed answer
@@ -133,8 +133,8 @@ def generate_open_rollout_and_answer(
     prefix_text: str,
     device: str,
     do_sample: bool = True,
-    temperature: float = 0.7,
-    top_p: float = 0.9,
+    temperature: float = 0.6,
+    top_p: float = 0.95,
     variation_seed: Optional[int] = None,  # reserved; sampler randomness is controlled via HF sampling params
     max_new_tokens_open: int = 256,
     max_new_tokens_forced: int = 128,
@@ -300,8 +300,8 @@ def annotate_data_with_thought_anchors(
                 model.device,
                 max_new_tokens=max_new_tokens_forced,
                 do_sample=True,
-                temperature=0.7,
-                top_p=0.9,
+                temperature=0.6,
+                top_p=0.95,
                 variation_seed=r,
             )
             base_answers.append(ans or "")
@@ -352,7 +352,7 @@ def annotate_data_with_thought_anchors(
             for r in trange(resamples, desc=f"Resamples@{idx}", leave=False):
                 resampled_chunk, a = generate_open_rollout_and_answer(
                     model, tokenizer, question, prefix_text, model.device,
-                    do_sample=True, temperature=0.7, top_p=0.9, variation_seed=r,
+                    do_sample=True, temperature=0.6, top_p=0.95, variation_seed=r,
                     max_new_tokens_open=remaining_budget,
                     max_new_tokens_forced=max_new_tokens_forced,
                 )
@@ -369,8 +369,8 @@ def annotate_data_with_thought_anchors(
         for idx in sentence_range:
             current = chunk_solutions.get(idx, [])
             next_solutions = chunk_solutions.get(idx + 1, []) if (idx + 1) in chunk_solutions else []
-            dissimilar = [s for s in current if s.get("similarity", 0.0) < 0.8]
-            similar = [s for s in current if s.get("similarity", 0.0) >= 0.8]
+            dissimilar = [s for s in current if s.get("similarity", 0.0) < 0.9]
+            similar = [s for s in current if s.get("similarity", 0.0) >= 0.9]
             diff_frac = (len(dissimilar) / len(current)) if current else 0.0
             different_trajectories.append(diff_frac)
             texts = [s.get("chunk_resampled", "") for s in current]
@@ -518,7 +518,13 @@ if __name__ == "__main__":
 
     model_name = args.model
     model_tag = model_name.replace('/', '-')
-    device = "mps" if torch.backends.mps.is_available() else "cpu"
+    # Prefer CUDA if available, then MPS, otherwise CPU
+    if torch.cuda.is_available():
+        device = "cuda"
+    elif torch.backends.mps.is_available():
+        device = "mps"
+    else:
+        device = "cpu"
     input_path = os.path.join("generated_data", f"generated_data_{model_tag}.json")
     output_path = os.path.join("generated_data", f"generated_data_annotated_{model_tag}.json")
 

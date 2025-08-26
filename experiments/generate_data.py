@@ -48,8 +48,10 @@ def generate_data(
     """
     Generates (prompt, CoT, answer, activations) tuples for a given model.
     """
-    # Determine device
-    if torch.backends.mps.is_available():
+    # Determine device: prefer CUDA, then MPS, then CPU
+    if torch.cuda.is_available():
+        device = "cuda"
+    elif torch.backends.mps.is_available():
         device = "mps"
     else:
         device = "cpu"
@@ -115,11 +117,16 @@ Think carefully and show your reasoning. At the end, provide the final answer en
                 max_new_tokens=int(max_cot_tokens),
                 num_return_sequences=1,
                 do_sample=True,
-                temperature=0.7,
-                top_p=0.9,
+                temperature=0.6,
+                top_p=0.95,
                 pad_token_id=tokenizer.pad_token_id,
             )
-            response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+            # Coerce returned ids to integer list to avoid tracer/dtype issues (InterleavingTracer, tensors, lists)
+            try:
+                ids_to_decode = outputs[0].cpu().detach().to(torch.long).tolist() if hasattr(outputs[0], 'cpu') else list(map(int, outputs[0]))
+            except Exception:
+                ids_to_decode = outputs[0]
+            response = tokenizer.decode(ids_to_decode, skip_special_tokens=True)
             cot_s, ans_s = extract_thinking_process_and_answer(response, prompt_len)
             if not ans_s:
                 forced_prefix = (
