@@ -2,20 +2,20 @@
 Experiment 1: Data Generation
 
 This script generates a dataset of (prompt, CoT, answer) tuples from the MATH
-dataset using a "thinking" model (e.g., deepseek‑ai/DeepSeek‑R1‑Distill‑Qwen‑1.5B).
+dataset using a "thinking" model (e.g., deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B).
 
 Notes and implementation choices vs. references:
 - Prompting: We apply the chat template and expect models that insert a
   "<think>\n" prefix before thoughts. We compute `prompt_len` by subtracting
   the length of this tokenized prefix so that downstream parsing can isolate
-  the generated portion. This behavior is model‑specific and differs from
+  the generated portion. This behavior is model-specific and differs from
   some reference repos that use fixed, plain prompts without chat templates.
 - Outputs: We only persist prompt, raw response, extracted CoT and final
-  boxed answer (and optional ground‑truth). We do not persist per‑token
+  boxed answer (and optional ground-truth). We do not persist per-token
   activations or rollout artifacts here (those are generated later or in
   separate experiments in the reference repos).
 
-For more details and a cross‑repo comparison, see docs/IMPLEMENTATION_NOTES.md.
+For more details and a cross-repo comparison, see docs/IMPLEMENTATION_NOTES.md.
 """
 
 import torch
@@ -42,6 +42,7 @@ def generate_data(
     math_level: str | None = None,
     math_type: str | None = None,
     save_gt: bool = True,
+    max_cot_tokens: int = 1000,
 ):
     """
     Generates (prompt, CoT, answer, activations) tuples for a given model.
@@ -105,7 +106,7 @@ Think carefully and show your reasoning. At the end, provide the final answer en
         outputs = model.generate(
             input_ids=inputs_tensor,
             attention_mask=(inputs_tensor != tokenizer.pad_token_id).long(), # Manually create attention mask
-            max_new_tokens=1000,
+            max_new_tokens=int(max_cot_tokens),
             num_return_sequences=1,
             do_sample=False,
             pad_token_id=tokenizer.pad_token_id,
@@ -179,7 +180,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description=(
             "Generate a dataset of (prompt, CoT, answer) tuples from the MATH dataset. "
-            "Also writes a prompt→ground‑truth mapping to ground_truth_math.json."
+            "Also writes a prompt→ground-truth mapping to ground_truth_math.json."
         )
     )
     parser.add_argument(
@@ -242,6 +243,15 @@ if __name__ == "__main__":
             "problems with this type are considered."
         ),
     )
+    parser.add_argument(
+        "--max_cot_tokens",
+        type=int,
+        default=1000,
+        help=(
+            "Maximum number of tokens to generate for the CoT in the base run. "
+            "Default: 1000."
+        ),
+    )
     args = parser.parse_args()
 
     generate_data(
@@ -252,4 +262,5 @@ if __name__ == "__main__":
         math_count=args.math_count,
         math_level=args.math_level,
         math_type=args.math_type,
+        max_cot_tokens=args.max_cot_tokens,
     )

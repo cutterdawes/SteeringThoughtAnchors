@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 from typing import Dict, List, Optional, Tuple
+from tqdm import tqdm
 
 # Try importing torch; allow dry-run without it
 try:
@@ -54,34 +55,39 @@ def _pool_to_hidden(x: "torch.Tensor", hidden_size: int) -> "torch.Tensor":
         return torch.zeros(hidden_size, dtype=torch.float32)
 
 
+def _encode(tokenizer, text: str, device: str):
+    ids = tokenizer(text, return_tensors="pt", add_special_tokens=False)
+    input_ids = ids["input_ids"].to(device)
+    pad_id = tokenizer.pad_token_id
+    if pad_id is None:
+        pad_id = tokenizer.eos_token_id if getattr(tokenizer, "eos_token_id", None) is not None else 0
+    attention_mask = (input_ids != pad_id).long().to(device)
+    return input_ids, attention_mask
+
+
 def mean_layer_activation(model, tokenizer, text: str, layer_idx: int, device: str):
     if torch is None:
-        raise RuntimeError("Torch is required for non-dry runs.")
+        raise RuntimeError("Torch is required.")
     if not text:
         return torch.zeros(model.config.hidden_size, dtype=torch.float32)
-    ids = tokenizer(text, return_tensors="pt", add_special_tokens=False).to(device)
-    with model.trace({
-        "input_ids": ids["input_ids"],
-        "attention_mask": (ids["input_ids"] != tokenizer.pad_token_id).long(),
-    }):
-        layer_out = model.model.layers[layer_idx].output[0].save()
-    t = layer_out.cpu().detach()
+    input_ids, attention_mask = _encode(tokenizer, text, device)
+    with torch.no_grad():
+        outputs = model.model(input_ids=input_ids, attention_mask=attention_mask, output_hidden_states=True, use_cache=False)
+    hidden_states = outputs.hidden_states  # tuple length: num_layers+1 (embeddings + layers)
+    idx = layer_idx + 1 if layer_idx >= 0 else -1
+    t = hidden_states[idx]
     return _pool_to_hidden(t, model.config.hidden_size)
 
 
 def mean_last_layer_embedding(model, tokenizer, text: str, device: str):
     if torch is None:
-        raise RuntimeError("Torch is required for non-dry runs.")
+        raise RuntimeError("Torch is required.")
     if not text:
         return torch.zeros(model.config.hidden_size, dtype=torch.float32)
-    ids = tokenizer(text, return_tensors="pt", add_special_tokens=False).to(device)
-    last_idx = model.config.num_hidden_layers - 1
-    with model.trace({
-        "input_ids": ids["input_ids"],
-        "attention_mask": (ids["input_ids"] != tokenizer.pad_token_id).long(),
-    }):
-        last = model.model.layers[last_idx].output[0].save()
-    t = last.cpu().detach()
+    input_ids, attention_mask = _encode(tokenizer, text, device)
+    with torch.no_grad():
+        outputs = model.model(input_ids=input_ids, attention_mask=attention_mask, output_hidden_states=True, use_cache=False)
+    t = outputs.hidden_states[-1]
     return _pool_to_hidden(t, model.config.hidden_size)
 
 
@@ -157,7 +163,6 @@ def compute_anchor_vector_for_example(
     example: Dict,
     layer_idx: int,
     resamples: int,
-    min_dissimilarity: float,
     min_counterfactuals: int,
     device: str,
 ) -> Optional[Dict]:
@@ -197,21 +202,28 @@ def compute_anchor_vector_for_example(
     cf_vectors: List[torch.Tensor] = []
     attempts = 0
     max_attempts = max(resamples * 2, min_counterfactuals)
+    pbar = tqdm(total=max_attempts, desc=f"CF sampling@layer{layer_idx}", unit="try", leave=False)
     while len(cf_vectors) < min_counterfactuals and attempts < max_attempts:
         attempts += 1
         cf_sentence = sample_counterfactual_sentence(model, tokenizer, question, prefix_text, device)
         if not cf_sentence:
+            pbar.update(1)
             continue
         cf_embed = mean_last_layer_embedding(model, tokenizer, cf_sentence, device)
         sim = cosine_similarity(anchor_embed, cf_embed)
-        if sim < (1.0 - min_dissimilarity):
+        # Parity with annotation: treat as dissimilar if similarity < 0.8
+        if sim < 0.8:
             # dissimilar enough
             cf_vec = mean_layer_activation(model, tokenizer, cf_sentence, layer_idx, device)
             cf_vectors.append(cf_vec)
+        pbar.update(1)
+        pbar.set_postfix(accepted=len(cf_vectors))
+    pbar.close()
 
     # If none passed threshold, relax by taking best we have up to resamples
     if not cf_vectors:
-        for _ in range(resamples):
+        print("[info] No CF passed similarity < 0.8; relaxing filter (take first valid sentences)")
+        for _ in tqdm(range(resamples), desc="CF relax", unit="try", leave=False):
             cf_sentence = sample_counterfactual_sentence(model, tokenizer, question, prefix_text, device)
             if cf_sentence:
                 cf_vectors.append(mean_layer_activation(model, tokenizer, cf_sentence, layer_idx, device))
@@ -239,10 +251,8 @@ def find_thought_anchor_steering_vectors(
     output_dir: str,
     layer_idx: Optional[int] = None,
     resamples: int = 10,
-    min_dissimilarity: float = 0.8,
     min_counterfactuals: int = 5,
     max_examples: Optional[int] = None,
-    dry_run: bool = False,
 ):
     """
     Compute steering vectors v = mean(a_anchor) - mean(a_counter) per annotated example,
@@ -259,64 +269,6 @@ def find_thought_anchor_steering_vectors(
         dataset = json.load(f)
     if max_examples is not None:
         dataset = dataset[:max_examples]
-
-    if dry_run:
-        # No torch/model required: produce deterministic pseudo vectors
-        import hashlib, math, random
-        def vec_from_text(text: str, dim: int = 64) -> List[float]:
-            seed = int(hashlib.md5((text or '').encode('utf-8')).hexdigest(), 16) % (2**32)
-            rng = random.Random(seed)
-            v = [rng.uniform(-1,1) for _ in range(dim)]
-            n = math.sqrt(sum(x*x for x in v)) or 1.0
-            return [x/n for x in v]
-        per_example: List[Dict] = []
-        collected: List[List[float]] = []
-        for ex in dataset:
-            anchor = ex.get('thought_anchor_sentence','')
-            if not anchor:
-                continue
-            v_anchor = vec_from_text(anchor)
-            prefix = ''
-            cot = ex.get('cot','') or ''
-            idx = cot.find(anchor)
-            if idx > 0:
-                prefix = cot[:idx]
-            v_counter = vec_from_text(prefix + '|cf')
-            v = [a-b for a,b in zip(v_anchor, v_counter)]
-            n = math.sqrt(sum(x*x for x in v)) or 1.0
-            v = [x/n for x in v]
-            per_example.append({
-                'prompt': ex.get('prompt','')[:2000],
-                'anchor_idx': int(ex.get('thought_anchor_idx',0) or 0),
-                'anchor_sentence': anchor,
-                'layer': -1,
-                'hidden_size': len(v),
-                'vector': v,
-                'counterfactual_count': 1,
-            })
-            collected.append(v)
-        mean_vector = None
-        if collected:
-            m = [sum(vals)/len(vals) for vals in zip(*collected)]
-            mn = (sum(x*x for x in m)) ** 0.5 or 1.0
-            mean_vector = [x/mn for x in m]
-        model_tag = model_name.replace('/', '-')
-        out_path = os.path.join(output_dir, f"steering_vectors_{model_tag}.json")
-        with open(out_path, 'w') as f:
-            json.dump({
-                'model': model_name,
-                'layer': -1,
-                'vectors': per_example,
-                'mean_vector': mean_vector,
-                'config': {
-                    'resamples': resamples,
-                    'min_dissimilarity': min_dissimilarity,
-                    'min_counterfactuals': min_counterfactuals,
-                    'dry_run': True,
-                }
-            }, f, indent=2)
-        print(f"[dry-run] Saved steering vectors to {out_path}")
-        return
 
     if torch is None:
         raise RuntimeError("Torch not available; install env or use --dry_run.")
@@ -336,13 +288,19 @@ def find_thought_anchor_steering_vectors(
     for i, ex in enumerate(dataset):
         if not ex.get("thought_anchor_sentence"):
             continue
+        # Per-example header
+        header = f"Example {i+1}/{len(dataset)}"
+        preview = (ex.get("prompt","") or "")[:80].replace("\n"," ")
+        print(f"\n=== {header} ===\nPrompt: {preview}{'...' if len(ex.get('prompt',''))>80 else ''}")
+        anc_full = (ex.get('thought_anchor_sentence','') or '').replace('\n',' ')
+        anc_preview = anc_full[:120] + ('...' if len(anc_full) > 120 else '')
+        print(f"Anchor idx: {ex.get('thought_anchor_idx', None)} | sentence: {anc_preview}")
         res = compute_anchor_vector_for_example(
             model,
             tokenizer,
             ex,
             layer_idx=layer_idx,
             resamples=resamples,
-            min_dissimilarity=min_dissimilarity,
             min_counterfactuals=min_counterfactuals,
             device=device,
         )
@@ -352,6 +310,9 @@ def find_thought_anchor_steering_vectors(
                 **res,
             })
             collected_vectors.append(torch.tensor(res["vector"], dtype=torch.float32))
+            print(f"Saved vector: layer={res['layer']}, dim={res['hidden_size']}, cf_count={res['counterfactual_count']}")
+        else:
+            print("[warn] Skipped example: insufficient counterfactuals or missing anchor")
 
     mean_vector: Optional[List[float]] = None
     if collected_vectors:
@@ -368,7 +329,6 @@ def find_thought_anchor_steering_vectors(
         "mean_vector": mean_vector,
         "config": {
             "resamples": resamples,
-            "min_dissimilarity": min_dissimilarity,
             "min_counterfactuals": min_counterfactuals,
         },
     }
@@ -389,12 +349,10 @@ if __name__ == "__main__":
     parser.add_argument("--model", type=str, default="deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B")
     parser.add_argument("--layer", type=int, default=None, help="Layer index for activations (default: last layer)")
     parser.add_argument("--resamples", type=int, default=10, help="Counterfactual resamples per example")
-    parser.add_argument("--min_dissimilarity", type=float, default=0.8, help="Minimum cosine dissimilarity threshold (1-cos) vs. anchor")
     parser.add_argument("--min_counterfactuals", type=int, default=5, help="Minimum accepted counterfactual sentences")
     parser.add_argument("--max_examples", type=int, default=None)
     parser.add_argument("--annotated_path", type=str, default=None, help="Optional explicit path to annotated data JSON")
     parser.add_argument("--output_dir", type=str, default=None, help="Optional output directory (default: generated_data)")
-    parser.add_argument("--dry_run", action="store_true", help="Run without torch/model, produce deterministic pseudo-vectors")
     args = parser.parse_args()
 
     annotated_path, default_out = _build_paths(args.model)
@@ -408,8 +366,6 @@ if __name__ == "__main__":
         output_dir=out_dir,
         layer_idx=args.layer,
         resamples=args.resamples,
-        min_dissimilarity=args.min_dissimilarity,
         min_counterfactuals=args.min_counterfactuals,
         max_examples=args.max_examples,
-        dry_run=args.dry_run,
     )

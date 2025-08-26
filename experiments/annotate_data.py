@@ -7,28 +7,28 @@ final answer behavior.
 
 Method summary (our implementation vs. references):
 - We split the CoT into sentence/paragraph chunks (prompt excluded) using
-  TA‑style chunking from utils.split_solution_into_chunks.
+  TA-style chunking from utils.split_solution_into_chunks.
 - For each sentence i, we remove it and generate multiple stochastic
   continuations from the prefix up to i. We mark each rollout as correct or
   incorrect relative to a ground truth (dataset GT if available; otherwise
-  a pseudo‑GT derived from baseline forced answers on the original CoT).
+  a pseudo-GT derived from baseline forced answers on the original CoT).
 - We embed the removed sentence and the first resampled sentence using the
-  model’s last‑layer mean hidden states (via nnsight). We label a resample as
+  model's last-layer mean hidden states (via nnsight). We label a resample as
   "dissimilar" if cosine < 0.8; otherwise it is considered "similar".
 - Importance score (selection): KL divergence between the correctness
   distribution of dissimilar resamples and a comparator built from the set of
-  similar resamples plus the next‑sentence (i+1) rollouts when available.
+  similar resamples plus the next-sentence (i+1) rollouts when available.
   The sentence with maximum KL is chosen as the thought anchor.
 
-Key differences from refs/thought‑anchors:
+Key differences from refs/thought-anchors:
 - Similarity backend: The paper/code uses SentenceTransformer embeddings
-  (e.g., all‑MiniLM); we use the reasoning model’s last‑layer embeddings.
+  (e.g., all-MiniLM); we use the reasoning model's last-layer embeddings.
 - KL over correctness: We compute KL over {true,false} distributions by
   default (use_prob_true=True) with Laplace smoothing. The reference code
-  frequently uses answer‑distribution KL and may omit smoothing by default.
+  frequently uses answer-distribution KL and may omit smoothing by default.
 - Metrics scope: We only compute the counterfactual (removal) metrics used
   for anchor selection. We do not compute or persist the additional
-  resampling/forced importance metrics or per‑chunk rollout artifacts.
+  resampling/forced importance metrics or per-chunk rollout artifacts.
 
 For a complete comparison, see docs/IMPLEMENTATION_NOTES.md.
 """
@@ -38,7 +38,7 @@ import os
 import re
 import argparse
 from typing import List, Tuple, Optional, Dict
-from tqdm import tqdm
+from tqdm import tqdm, trange
 
 import torch
 
@@ -235,6 +235,7 @@ def annotate_data_with_thought_anchors(
     max_examples: Optional[int] = None,
     max_sentences: Optional[int] = None,
     max_new_tokens_forced: int = 128,
+    max_total_cot_tokens: int = 1000,
     resamples: int = 10,
     use_abs_importance: bool = True,
     ground_truth_map: Optional[dict] = None,
@@ -243,7 +244,7 @@ def annotate_data_with_thought_anchors(
     Annotate thought anchors via a counterfactual removal test per sentence.
     For each CoT sentence, remove it, force a final answer, and mark if the answer changes.
     Anchor selection uses KL divergence on correctness distributions for
-    dissimilar resamples vs. a comparator (similar + next‑sentence). The
+    dissimilar resamples vs. a comparator (similar + next-sentence). The
     sentence with maximum KL is selected as the thought anchor.
     """
     print(f"Loading data from {input_data_path} for annotation...")
@@ -259,10 +260,16 @@ def annotate_data_with_thought_anchors(
     if max_examples is not None:
         dataset = dataset[:max_examples]
 
-    for i, data_point in enumerate(tqdm(dataset, desc="Annotating thought anchors", unit="ex")):
+    total_examples = len(dataset)
+    for i, data_point in enumerate(dataset, start=1):
+        print(f"\n=== Example {i}/{total_examples} ===")
         question = data_point.get('prompt', '')
         original_cot = data_point.get('cot', '')
         original_answer = data_point.get('answer', '')
+        q_preview = (question or "").replace("\n", " ")
+        if len(q_preview) > 80:
+            q_preview = q_preview[:80] + "..."
+        print(f"Prompt: {q_preview}")
 
         # Ensure we have a baseline final answer; compute via forced pass if missing
         if not original_answer:
@@ -282,7 +289,8 @@ def annotate_data_with_thought_anchors(
 
         # Baseline resamples and accuracy
         base_answers: List[str] = []
-        for r in range(resamples):
+        print(f"Baseline forced resamples: {resamples}")
+        for r in trange(resamples, desc="Baseline", leave=False):
             # Try sampling; fall back handled inside
             _, ans = generate_forced_answer(
                 model,
@@ -312,6 +320,7 @@ def annotate_data_with_thought_anchors(
 
         # Split using TA-style chunking
         sentences = split_solution_into_chunks(original_cot)
+        print(f"CoT chunks: {len(sentences)}")
         chunk_solutions: Dict[int, List[Dict]] = {i: [] for i in range(len(sentences))}
         cf_importance_kl: List[float] = []
         cf_accuracies: List[float] = []
@@ -328,19 +337,19 @@ def annotate_data_with_thought_anchors(
         sentence_range = range(len(sentences)) if max_sentences is None else range(min(len(sentences), max_sentences))
         # Precompute removed chunk embeddings
         removed_embeds = [embed_text_with_model(model, tokenizer, s, model.device) for s in sentences]
-        for idx in sentence_range:
+        for idx in tqdm(sentence_range, desc="Chunks", unit="chunk", leave=False):
             prefix_text = "\n".join(sentences[:idx])
             removed_text = sentences[idx]
             removed_embed = removed_embeds[idx]
             sols: List[Dict] = []
-            # Compute token budget so that prefix CoT + new tokens <= 1000
+            # Compute token budget so that prefix CoT + new tokens <= max_total_cot_tokens
             try:
                 prefix_ids = tokenizer(prefix_text, return_tensors="pt", add_special_tokens=False)["input_ids"]
                 prefix_tokens = int(prefix_ids.shape[-1])
             except Exception:
                 prefix_tokens = 0
-            remaining_budget = max(1, 1000 - prefix_tokens)
-            for r in range(resamples):
+            remaining_budget = max(1, int(max_total_cot_tokens) - prefix_tokens)
+            for r in trange(resamples, desc=f"Resamples@{idx}", leave=False):
                 resampled_chunk, a = generate_open_rollout_and_answer(
                     model, tokenizer, question, prefix_text, model.device,
                     do_sample=True, temperature=0.7, top_p=0.9, variation_seed=r,
@@ -367,14 +376,16 @@ def annotate_data_with_thought_anchors(
             texts = [s.get("chunk_resampled", "") for s in current]
             overdet = 1.0 - (len(set(texts)) / len(texts)) if texts else 0.0
             overdeterminedness.append(overdet)
-            comparator = next_solutions + similar if next_solutions else similar
+            # TA parity: require next_solutions; include similar alongside next_solutions
+            comparator = (next_solutions + similar) if next_solutions else []
             # Always compute per-chunk accuracy from current resamples
             acc = sum(1 for s in current if s.get("is_correct", False)) / max(1, len(current)) if current else 0.0
             cf_accuracies.append(acc)
             cf_answers.append(current[0].get("answer", "") if current else "")
-            # KL requires non-empty partitions; warn if missing
-            if not dissimilar or not comparator:
-                print(f"[warn] Empty similarity partition(s) at chunk {idx}: dissimilar={len(dissimilar)}, comparator={len(comparator)}")
+            # KL requires non-empty partitions; warn only when comparator is empty (TA requires next_solutions)
+            if not comparator or not dissimilar:
+                if not comparator:
+                    print(f"[warn] Empty comparator at chunk {idx}: next_solutions missing or empty; KL set to 0.0")
                 cf_importance_kl.append(0.0)
             else:
                 kl = calculate_kl_divergence(dissimilar, comparator, laplace_smooth=True, use_prob_true=True)
@@ -384,6 +395,12 @@ def annotate_data_with_thought_anchors(
         max_imp = max(cf_importance_kl) if cf_importance_kl else 0.0
         anchor_idx = cf_importance_kl.index(max_imp) if cf_importance_kl else None
         anchor_sentence = sentences[anchor_idx] if anchor_idx is not None else ""
+        print(f"Selected anchor idx: {anchor_idx} | KL max: {max_imp:.4f}")
+        if anchor_sentence:
+            anc_preview = (anchor_sentence or "").replace("\n", " ")
+            if len(anc_preview) > 120:
+                anc_preview = anc_preview[:120] + "..."
+            print(f"Anchor sentence: {anc_preview}")
 
         # Drop any saved activations from upstream dataset; we don't persist activations here
         if 'activations' in data_point:
@@ -460,6 +477,15 @@ if __name__ == "__main__":
         ),
     )
     parser.add_argument(
+        "--max_total_cot_tokens",
+        type=int,
+        default=1000,
+        help=(
+            "Maximum total CoT tokens allowed after resampling (existing prefix + new continuation). "
+            "Open resampling uses a dynamic budget of max_total_cot_tokens - prefix_tokens. Default: 1000."
+        ),
+    )
+    parser.add_argument(
         "--resamples",
         type=int,
         default=10,
@@ -473,8 +499,8 @@ if __name__ == "__main__":
         "--no_abs_importance",
         action="store_true",
         help=(
-            "Reserved flag (currently a no‑op): in prior iterations this toggled the "
-            "sign of accuracy‑difference importance. We now select anchors solely via KL "
+            "Reserved flag (currently a no-op): in prior iterations this toggled the "
+            "sign of accuracy-difference importance. We now select anchors solely via KL "
             "divergence on correctness distributions; this flag does not affect selection."
         ),
     )
@@ -515,6 +541,7 @@ if __name__ == "__main__":
         max_examples=args.max_examples,
         max_sentences=args.max_sentences,
         max_new_tokens_forced=args.max_new_tokens_forced,
+        max_total_cot_tokens=args.max_total_cot_tokens,
         resamples=args.resamples,
         use_abs_importance=(not args.no_abs_importance),
         ground_truth_map=gt_map,
