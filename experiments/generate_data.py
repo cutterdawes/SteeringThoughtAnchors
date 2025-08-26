@@ -43,6 +43,7 @@ def generate_data(
     math_type: str | None = None,
     save_gt: bool = True,
     max_cot_tokens: int = 1000,
+    samples: int = 5,
 ):
     """
     Generates (prompt, CoT, answer, activations) tuples for a given model.
@@ -102,59 +103,83 @@ Think carefully and show your reasoning. At the end, provide the final answer en
         # adjust length reference for math iterable
         
 
-        # Generate response (CoT + answer) using the underlying transformers model's generate method
-        outputs = model.generate(
-            input_ids=inputs_tensor,
-            attention_mask=(inputs_tensor != tokenizer.pad_token_id).long(), # Manually create attention mask
-            max_new_tokens=int(max_cot_tokens),
-            num_return_sequences=1,
-            do_sample=False,
-            pad_token_id=tokenizer.pad_token_id,
-        )
-        
-        response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-        
-        print(f"\n--- Raw Response for Prompt {i+1} ---")
-        print(response)
-        print(f"--- End Raw Response ---")
+        # Generate multiple samples; store per-sample answers
+        answers: list[str] = []
+        cots: list[str] = []
+        raw_responses: list[str] = []
 
-        # Extract CoT and answer (favor \boxed{...} extraction for the answer)
-        cot, answer = extract_thinking_process_and_answer(response, prompt_len)
-
-        # If no boxed answer was found, attempt a forced-answer completion pass
-        if not answer:
-            forced_prefix = (
-                f"Solve the following problem step by step. You MUST put your final answer in \\boxed{{}}.\n\n"
-                f"Problem: {original_question}\n\n"
-                f"Solution:\n<think>\n{cot}\n</think>\n\nTherefore, the final answer is \\boxed{{"
-            )
-            forced_inputs = tokenizer(forced_prefix, return_tensors="pt").to(model.device)
-            forced_outputs = model.generate(
-                input_ids=forced_inputs["input_ids"],
-                attention_mask=(forced_inputs["input_ids"] != tokenizer.pad_token_id).long(),
-                max_new_tokens=128,
-                do_sample=False,
+        for s in range(max(1, int(samples))):
+            outputs = model.generate(
+                input_ids=inputs_tensor,
+                attention_mask=(inputs_tensor != tokenizer.pad_token_id).long(), # Manually create attention mask
+                max_new_tokens=int(max_cot_tokens),
+                num_return_sequences=1,
+                do_sample=True,
+                temperature=0.7,
+                top_p=0.9,
                 pad_token_id=tokenizer.pad_token_id,
             )
-            forced_text = tokenizer.decode(forced_outputs[0], skip_special_tokens=True)
-            # Attempt boxed extraction from the forced output
-            _, forced_answer = extract_thinking_process_and_answer(forced_text, prompt_len=0)
-            if forced_answer:
-                answer = forced_answer
+            response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+            cot_s, ans_s = extract_thinking_process_and_answer(response, prompt_len)
+            if not ans_s:
+                forced_prefix = (
+                    f"Solve the following problem step by step. You MUST put your final answer in \\boxed{{}}.\n\n"
+                    f"Problem: {original_question}\n\n"
+                    f"Solution:\n<think>\n{cot_s}\n</think>\n\nTherefore, the final answer is \\boxed{{"
+                )
+                forced_inputs = tokenizer(forced_prefix, return_tensors="pt").to(model.device)
+                forced_outputs = model.generate(
+                    input_ids=forced_inputs["input_ids"],
+                    attention_mask=(forced_inputs["input_ids"] != tokenizer.pad_token_id).long(),
+                    max_new_tokens=128,
+                    do_sample=False,
+                    pad_token_id=tokenizer.pad_token_id,
+                )
+                forced_text = tokenizer.decode(forced_outputs[0], skip_special_tokens=True)
+                _, forced_answer = extract_thinking_process_and_answer(forced_text, prompt_len=0)
+                if forced_answer:
+                    ans_s = forced_answer
+            # Cleanup punctuation (factorial-aware)
+            try:
+                from utils import cleanup_answer_punctuation as _cleanup
+                ans_s = _cleanup(ans_s, gt_answer)
+            except Exception:
+                pass
+            answers.append(ans_s or "")
+            cots.append(cot_s or "")
+            raw_responses.append(response)
 
-        # Punctuation cleanup aligned with normalization and factorial handling
+        # Choose representative single answer (mode of normalized answers)
         try:
-            from utils import cleanup_answer_punctuation as _cleanup
-            answer = _cleanup(answer, gt_answer)
+            from utils import normalize_answer as _norm
+            counts = {}
+            for a in answers:
+                na = _norm(a)
+                counts[na] = counts.get(na, 0) + 1
+            best_norm = max(counts.items(), key=lambda x: x[1])[0] if counts else ""
+            single_answer = next((a for a in answers if _norm(a) == best_norm), (answers[0] if answers else ""))
         except Exception:
-            pass
+            single_answer = answers[0] if answers else ""
+
+        # Compute accuracy vs GT if available
+        try:
+            from utils import check_answer as _check
+            if gt_answer:
+                correct = sum(1 for a in answers if _check(a, gt_answer))
+                accuracy = correct / max(1, len(answers))
+            else:
+                accuracy = None
+        except Exception:
+            accuracy = None
 
         record = {
             "prompt": original_question,
             "model_input_prompt": prompt_string_for_model,
-            "raw_response": response,
-            "cot": cot,
-            "answer": answer,
+            "raw_response": raw_responses[0] if raw_responses else "",
+            "cot": cots[0] if cots else "",
+            "answer": single_answer,
+            "answers": answers,
+            "accuracy": accuracy,
         }
         record["gt_answer"] = gt_answer or ""
         record["gt_solution"] = gt_solution or ""
@@ -252,6 +277,14 @@ if __name__ == "__main__":
             "Default: 1000."
         ),
     )
+    parser.add_argument(
+        "--samples",
+        type=int,
+        default=5,
+        help=(
+            "Number of stochastic samples to generate per problem. Stores all answers under 'answers' and a representative 'answer' plus 'accuracy'."
+        ),
+    )
     args = parser.parse_args()
 
     generate_data(
@@ -263,4 +296,5 @@ if __name__ == "__main__":
         math_level=args.math_level,
         math_type=args.math_type,
         max_cot_tokens=args.max_cot_tokens,
+        samples=args.samples,
     )
