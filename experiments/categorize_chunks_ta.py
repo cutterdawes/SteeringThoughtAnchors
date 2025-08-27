@@ -134,7 +134,7 @@ def _annotate_with_local_hf(prompt: str, local_model_id: str = "Qwen/Qwen2.5-3B-
 
 
 def categorize_examples(
-    annotated_path: str,
+    generated_path: str,
     output_dir: str,
     annotator_model: str = "qwen/qwen2.5-3b-instruct",
     max_examples: Optional[int] = None,
@@ -144,16 +144,16 @@ def categorize_examples(
 ) -> str:
     """Categorize chunks directly from annotated dataset (CoT), verifying chunking against anchors if available.
 
-    - annotated_path: generated_data_annotated_{model}.json
+    - generated_path: generated_data_{model}.json (un-annotated)
     - anchors_path_for_check: optional path to steering_anchors_{model}.json; used only to sanity-check chunking parity.
     - annotator_model: default to Qwen2.5-3B-Instruct via OpenRouter id 'qwen/qwen2.5-3b-instruct'.
     """
-    if not os.path.exists(annotated_path):
-        raise FileNotFoundError(f"Missing annotated JSON: {annotated_path}")
-    with open(annotated_path, 'r') as f:
-        annotated = json.load(f)
+    if not os.path.exists(generated_path):
+        raise FileNotFoundError(f"Missing generated JSON: {generated_path}")
+    with open(generated_path, 'r') as f:
+        generated = json.load(f)
     if max_examples is not None:
-        annotated = annotated[:max_examples]
+        generated = generated[:max_examples]
 
     # Optionally load anchors (for parity check only)
     anchors_examples: List[Dict] = []
@@ -175,7 +175,7 @@ def categorize_examples(
     os.makedirs(output_dir, exist_ok=True)
 
     results: List[Dict] = []
-    for ex_idx, ex in enumerate(annotated):
+    for ex_idx, ex in enumerate(generated):
         cot = ex.get('cot') or ''
         chunks = split_solution_into_chunks(cot)
         if not chunks:
@@ -236,16 +236,16 @@ def categorize_examples(
 
     # Derive model tag for filename
     if not model_name:
-        # Try to infer from annotated filename
-        base = os.path.basename(annotated_path)
-        m = re.search(r"generated_data_annotated_(.+)\.json", base)
+        # Try to infer from generated filename
+        base = os.path.basename(generated_path)
+        m = re.search(r"generated_data_(.+)\.json", base)
         model_tag = m.group(1) if m else 'model'
     else:
         model_tag = model_name.replace('/', '-')
     out_path = os.path.join(output_dir, f"chunk_categories_{model_tag}.json")
     payload = {
         "model": model_name,
-        "annotated_path": annotated_path,
+        "generated_path": generated_path,
         "anchors_check_path": anchors_path_for_check,
         "annotator_model": annotator_model,
         "tagset": TA_FUNCTION_TAGS,
@@ -257,18 +257,17 @@ def categorize_examples(
     return out_path
 
 
-def _build_paths(model_name: str) -> (str, str, str):
+def _build_paths(model_name: str) -> (str, str):
     model_tag = model_name.replace('/', '-')
-    annotated_path = os.path.join('generated_data', f'generated_data_annotated_{model_tag}.json')
-    anchors_path = os.path.join('generated_data', f'steering_anchors_{model_tag}.json')
+    generated_path = os.path.join('generated_data', f'generated_data_{model_tag}.json')
     output_dir = 'generated_data'
-    return annotated_path, anchors_path, output_dir
+    return generated_path, output_dir
 
 
 if __name__ == "__main__":
-    p = argparse.ArgumentParser(description="Categorize CoT chunks with TA-style function tags (from annotated CoT)")
+    p = argparse.ArgumentParser(description="Categorize CoT chunks with TA-style function tags (from un-annotated generated CoT)")
     p.add_argument("--model", type=str, default="deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B")
-    p.add_argument("--annotated_path", type=str, default=None)
+    p.add_argument("--generated_path", type=str, default=None)
     p.add_argument("--anchors_check_path", type=str, default=None, help="Optional anchors JSON to parity-check chunking")
     p.add_argument("--output_dir", type=str, default=None)
     p.add_argument("--annotator_model", type=str, default="qwen/qwen2.5-3b-instruct", help="Annotator model (OpenRouter id). Default: Qwen2.5-3B-Instruct")
@@ -277,14 +276,14 @@ if __name__ == "__main__":
     p.add_argument("--local_model_id", type=str, default="Qwen/Qwen2.5-3B-Instruct", help="HF model id for --use_local (default: Qwen/Qwen2.5-3B-Instruct)")
     args = p.parse_args()
 
-    annotated_path, anchors_path, default_out = _build_paths(args.model)
-    if args.annotated_path:
-        annotated_path = args.annotated_path
-    anchors_check = args.anchors_check_path or anchors_path
+    generated_path, default_out = _build_paths(args.model)
+    if args.generated_path:
+        generated_path = args.generated_path
+    anchors_check = args.anchors_check_path
     out_dir = args.output_dir or default_out
 
     categorize_examples(
-        annotated_path=annotated_path,
+        generated_path=generated_path,
         output_dir=out_dir,
         annotator_model=args.annotator_model,
         max_examples=args.max_examples,
