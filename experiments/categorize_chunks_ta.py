@@ -105,12 +105,42 @@ def _sanitize_tags(tags: List[str]) -> List[str]:
     return out[:3]
 
 
+def _annotate_with_local_hf(prompt: str, local_model_id: str = "Qwen/Qwen2.5-3B-Instruct", max_new_tokens: int = 768) -> str:
+    """Generate annotation JSON using a local HF model (no API)."""
+    try:
+        from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+        import torch
+    except Exception as e:
+        raise RuntimeError(f"Local HF inference requested but transformers/torch not available: {e}")
+
+    # Load lightweight default; on L4, 3B runs easily in bf16/8-bit
+    tokenizer = AutoTokenizer.from_pretrained(local_model_id)
+    # Prefer bf16 on Ampere (L4), fallback to float16 if not supported
+    dtype = torch.bfloat16 if torch.cuda.is_available() else torch.float32
+    model = AutoModelForCausalLM.from_pretrained(local_model_id, torch_dtype=dtype, device_map="auto")
+    gen = pipeline("text-generation", model=model, tokenizer=tokenizer, device_map="auto")
+
+    # Encourage strict JSON
+    prompt_local = prompt + "\n\nOnly return valid JSON."
+    out = gen(
+        prompt_local,
+        max_new_tokens=max_new_tokens,
+        do_sample=False,
+        temperature=0.0,
+        return_full_text=False,
+    )
+    text = out[0]["generated_text"] if isinstance(out, list) and out else ""
+    return text
+
+
 def categorize_examples(
     annotated_path: str,
     output_dir: str,
     annotator_model: str = "qwen/qwen2.5-3b-instruct",
     max_examples: Optional[int] = None,
     anchors_path_for_check: Optional[str] = None,
+    use_local: bool = False,
+    local_model_id: str = "Qwen/Qwen2.5-3B-Instruct",
 ) -> str:
     """Categorize chunks directly from annotated dataset (CoT), verifying chunking against anchors if available.
 
@@ -167,11 +197,28 @@ def categorize_examples(
                         break
 
         prompt = build_annotation_prompt(chunks)
-        try:
-            resp = chat(prompt, model=annotator_model, max_tokens=2048)  # type: ignore
-        except Exception as e:
-            print(f"[warn] annotation failed for example {ex_idx}: {e}")
-            resp = "{}"
+        # Choose inference path
+        resp = None
+        if use_local:
+            try:
+                resp = _annotate_with_local_hf(prompt, local_model_id=local_model_id)
+            except Exception as e:
+                print(f"[warn] local annotation failed for example {ex_idx}: {e}")
+                resp = "{}"
+        else:
+            # API path via utils.chat (OpenRouter/OpenAI/Anthropic). Provide clearer hints on missing keys.
+            try:
+                resp = chat(prompt, model=annotator_model, max_tokens=2048)  # type: ignore
+            except Exception as e:
+                need_or = ("qwen" in annotator_model or "deepseek" in annotator_model or "gemini" in annotator_model or "meta-llama" in annotator_model)
+                if need_or and not os.getenv("OPENROUTER_API_KEY"):
+                    print("[hint] OPENROUTER_API_KEY is not set; set it or use --use_local to run offline.")
+                if (annotator_model.startswith("gpt-") or annotator_model in {"gpt-4o","gpt-4.1"}) and not os.getenv("OPENAI_API_KEY"):
+                    print("[hint] OPENAI_API_KEY is not set.")
+                if annotator_model.startswith("claude-") and not os.getenv("ANTHROPIC_API_KEY"):
+                    print("[hint] ANTHROPIC_API_KEY is not set.")
+                print(f"[warn] annotation failed for example {ex_idx}: {e}")
+                resp = "{}"
         blob = _extract_json_blob(resp or "{}") or {}
         # Normalize to structure: {chunk_index: {function_tags: [...]}}
         per_chunk = {}
@@ -226,6 +273,8 @@ if __name__ == "__main__":
     p.add_argument("--output_dir", type=str, default=None)
     p.add_argument("--annotator_model", type=str, default="qwen/qwen2.5-3b-instruct", help="Annotator model (OpenRouter id). Default: Qwen2.5-3B-Instruct")
     p.add_argument("--max_examples", type=int, default=None)
+    p.add_argument("--use_local", action="store_true", help="Use local HF model for annotation (no API key required)")
+    p.add_argument("--local_model_id", type=str, default="Qwen/Qwen2.5-3B-Instruct", help="HF model id for --use_local (default: Qwen/Qwen2.5-3B-Instruct)")
     args = p.parse_args()
 
     annotated_path, anchors_path, default_out = _build_paths(args.model)
@@ -240,4 +289,6 @@ if __name__ == "__main__":
         annotator_model=args.annotator_model,
         max_examples=args.max_examples,
         anchors_path_for_check=anchors_check,
+        use_local=args.use_local,
+        local_model_id=args.local_model_id,
     )
