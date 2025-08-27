@@ -360,8 +360,8 @@ def annotate_data_with_thought_anchors(
         for idx in sentence_range:
             current = chunk_solutions.get(idx, [])
             next_solutions = chunk_solutions.get(idx + 1, []) if (idx + 1) in chunk_solutions else []
-            dissimilar = [s for s in current if s.get("similarity", 0.0) < 0.9]
-            similar = [s for s in current if s.get("similarity", 0.0) >= 0.9]
+            dissimilar = [s for s in current if s.get("similarity", 0.0) < 0.8]
+            similar = [s for s in current if s.get("similarity", 0.0) >= 0.8]
             diff_frac = (len(dissimilar) / len(current)) if current else 0.0
             different_trajectories.append(diff_frac)
             texts = [s.get("chunk_resampled", "") for s in current]
