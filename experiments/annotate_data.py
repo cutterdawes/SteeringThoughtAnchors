@@ -14,7 +14,7 @@ Method summary (our implementation vs. references):
   a pseudo-GT derived from baseline forced answers on the original CoT).
 - We embed the removed sentence and the first resampled sentence using the
   model's last-layer mean hidden states (via nnsight). We label a resample as
-  "dissimilar" if cosine < 0.9; otherwise it is considered "similar".
+  "dissimilar" if cosine < 0.8; otherwise it is considered "similar".
 - Importance score (selection): KL divergence between the correctness
   distribution of dissimilar resamples and a comparator built from the set of
   similar resamples plus the next-sentence (i+1) rollouts when available.
