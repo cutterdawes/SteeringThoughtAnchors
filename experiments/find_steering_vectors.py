@@ -16,9 +16,14 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 
 def _device() -> str:
+    """Prefer CUDA, then MPS, then CPU to match other experiments."""
     if torch is None:
         return "cpu"
-    return "mps" if torch.backends.mps.is_available() else "cpu"
+    if torch.cuda.is_available():
+        return "cuda"
+    if torch.backends.mps.is_available():
+        return "mps"
+    return "cpu"
 
 
 def _pool_to_hidden(x: "torch.Tensor", hidden_size: int) -> "torch.Tensor":
@@ -147,13 +152,15 @@ def sample_counterfactual_sentence(
     )
     if do_sample:
         gen_kwargs.update(dict(temperature=temperature, top_p=top_p))
+    # Import robust generators lazily to avoid top-level torch requirements
+    from utils import generate_with_model, decode_generate_outputs  # type: ignore
     try:
-        out_ids = model.generate(**gen_kwargs)
+        out = generate_with_model(model, tokenizer, **gen_kwargs)
     except Exception:
         gen_kwargs.update(dict(do_sample=False))
-        out_ids = model.generate(**gen_kwargs)
-    cont = tokenizer.decode(out_ids[0], skip_special_tokens=True)
-    continuation_only = cont[len(prompt):]
+        out = generate_with_model(model, tokenizer, **gen_kwargs)
+    cont_text = decode_generate_outputs(tokenizer, out, skip_special_tokens=True)
+    continuation_only = cont_text[len(prompt):]
     return extract_first_sentence(continuation_only)
 
 
