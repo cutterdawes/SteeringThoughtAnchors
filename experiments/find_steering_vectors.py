@@ -218,8 +218,8 @@ def compute_anchor_vector_for_example(
             continue
         cf_embed = mean_last_layer_embedding(model, tokenizer, cf_sentence, device)
         sim = cosine_similarity(anchor_embed, cf_embed)
-        # Parity with annotation: treat as dissimilar if similarity < 0.8
-        if sim < 0.8:
+        # Parity with annotation: treat as dissimilar if similarity < 0.9
+        if sim < 0.9:
             # dissimilar enough
             cf_vec = mean_layer_activation(model, tokenizer, cf_sentence, layer_idx, device)
             cf_vectors.append(cf_vec)
@@ -229,7 +229,7 @@ def compute_anchor_vector_for_example(
 
     # If none passed threshold, relax by taking best we have up to resamples
     if not cf_vectors:
-        print("[info] No CF passed similarity < 0.8; relaxing filter (take first valid sentences)")
+        print("[info] No CF passed similarity < 0.9; relaxing filter (take first valid sentences)")
         for _ in tqdm(range(resamples), desc="CF relax", unit="try", leave=False):
             cf_sentence = sample_counterfactual_sentence(model, tokenizer, question, prefix_text, device)
             if cf_sentence:
