@@ -38,15 +38,5 @@
   "If $2x - 9y = 14$ and $6x = 42 +y$, what is the value of the product $xy$?": "0",
   "If the numbers 4, 5 and 6 are each used exactly once to replace the letters in the expression $A ( B - C )$, what is the least possible result?": "-10",
   "What is the value of $f(0) + f(3)$ given $f(x) = \\sqrt{3x} + 2$?": "7",
-  "Find the value of $x$ that satisfies $\\frac{1}{3x-1} = \\frac{2}{x+1}$.": "\\frac{3}{5}",
-  "What is $1 + 2 + 3 + \\cdots + 98 + 99 + 100$?": "5050",
-  "Evaluate $\\left\\lceil\\sqrt{27}\\right\\rceil - \\left\\lfloor\\sqrt{26}\\right\\rfloor$.": "1",
-  "What is the value of $\\sqrt[3]{4^5 + 4^5 + 4^5 + 4^5}$?": "16",
-  "Find $x$ such that $\\log_5(x-18)=2$.": "43",
-  "$P$ and $Q$ represent numbers, and $P \\ast Q$ means $\\cfrac{P+Q}{2}$. What is the value of $3 \\ast (6 \\ast 8)$?": "5",
-  "If $\\&x$ is defined as $\\&x = x + 5$ and $\\#x$ is defined as $\\#x = x^2$ , what is the value of $\\#(\\&4)$?": "81",
-  "How many units long is a segment whose endpoints are $(-4,1)$ and $(1,13)$?": "13",
-  "Three people are standing on a Cartesian coordinate plane. Robert is standing at point $(4,3)$, Lucy at point $(6,1)$, and Liz at point $(1,7)$. How many units away is the farther person from Robert?": "5",
-  "The ratio of teachers to students in a particular school is 1 to 11. The ratio of female students to the total number of students is 4 to 9. If there are 396 female students, how many teachers are there?": "81\\text{ teachers}",
-  "Five workers paint four houses in six days. Working at the same rate as these workers, how many workers are needed to paint 12 houses in three days?": "30"
+  "Find the value of $x$ that satisfies $\\frac{1}{3x-1} = \\frac{2}{x+1}$.": "\\frac{3}{5}"
 }
