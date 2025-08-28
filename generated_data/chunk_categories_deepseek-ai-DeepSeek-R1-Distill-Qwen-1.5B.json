@@ -17,7 +17,7 @@
   "examples": [
     {
       "example_index": 0,
-      "num_chunks": 25,
+      "num_chunks": 29,
       "categories": {
         "0": {
           "function_tags": [
@@ -26,22 +26,22 @@
         },
         "1": {
           "function_tags": [
-            "plan_generation"
+            "problem_setup"
           ]
         },
         "2": {
           "function_tags": [
-            "fact_retrieval"
+            "unknown"
           ]
         },
         "3": {
           "function_tags": [
-            "active_computation"
+            "plan_generation"
           ]
         },
         "4": {
           "function_tags": [
-            "self_checking"
+            "fact_retrieval"
           ]
         },
         "5": {
@@ -56,12 +56,12 @@
         },
         "7": {
           "function_tags": [
-            "fact_retrieval"
+            "active_computation"
           ]
         },
         "8": {
           "function_tags": [
-            "plan_generation"
+            "result_consolidation"
           ]
         },
         "9": {
@@ -76,7 +76,7 @@
         },
         "11": {
           "function_tags": [
-            "fact_retrieval"
+            "plan_generation"
           ]
         },
         "12": {
@@ -91,12 +91,12 @@
         },
         "14": {
           "function_tags": [
-            "active_computation"
+            "fact_retrieval"
           ]
         },
         "15": {
           "function_tags": [
-            "active_computation"
+            "result_consolidation"
           ]
         },
         "16": {
@@ -106,12 +106,12 @@
         },
         "17": {
           "function_tags": [
-            "unknown"
+            "active_computation"
           ]
         },
         "18": {
           "function_tags": [
-            "active_computation"
+            "result_consolidation"
           ]
         },
         "19": {
@@ -131,17 +131,37 @@
         },
         "22": {
           "function_tags": [
-            "final_answer_emission"
+            "result_consolidation"
           ]
         },
         "23": {
           "function_tags": [
-            "final_answer_emission"
+            "active_computation"
           ]
         },
         "24": {
           "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "25": {
+          "function_tags": [
             "final_answer_emission"
+          ]
+        },
+        "26": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "27": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "28": {
+          "function_tags": [
+            "self_checking"
           ]
         }
       }
@@ -157,12 +177,2350 @@
         },
         "1": {
           "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "self_checking"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 2,
+      "num_chunks": 32,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "self_checking",
+            "problem_setup"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "self_checking",
+            "problem_setup"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "self_checking",
+            "problem_setup"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "26": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "27": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "28": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "29": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "30": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "31": {
+          "function_tags": [
+            "unknown"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 3,
+      "num_chunks": 24,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "unknown"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 4,
+      "num_chunks": 28,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation",
+            "fact_retrieval"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "26": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "27": {
+          "function_tags": [
+            "self_checking"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 5,
+      "num_chunks": 25,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "plan_generation",
+            "fact_retrieval"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation",
+            "fact_retrieval"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 6,
+      "num_chunks": 26,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 7,
+      "num_chunks": 32,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "plan_generation",
+            "active_computation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "26": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "27": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "28": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "29": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "30": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "31": {
+          "function_tags": [
+            "plan_generation",
+            "active_computation"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 8,
+      "num_chunks": 29,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "plan_generation",
+            "fact_retrieval"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "plan_generation",
+            "fact_retrieval"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "plan_generation",
+            "fact_retrieval"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "plan_generation",
+            "fact_retrieval"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "plan_generation",
+            "active_computation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "26": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "27": {
+          "function_tags": [
+            "uncertainty_management"
+          ]
+        },
+        "28": {
+          "function_tags": [
+            "plan_generation",
+            "fact_retrieval"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 9,
+      "num_chunks": 30,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
             "uncertainty_management"
           ]
         },
         "2": {
           "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "uncertainty_management"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "uncertainty_management"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "26": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "27": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "28": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "29": {
+          "function_tags": [
+            "self_checking"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 10,
+      "num_chunks": 23,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "7": {
+          "function_tags": [
             "fact_retrieval"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "active_computation"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 11,
+      "num_chunks": 31,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "26": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "27": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "28": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "29": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "30": {
+          "function_tags": [
+            "unknown"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 12,
+      "num_chunks": 25,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "uncertainty_management"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "result_consolidation",
+            "final_answer_emission"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "uncertainty_management"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "uncertainty_management"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "active_computation"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 13,
+      "num_chunks": 30,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "26": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "27": {
+          "function_tags": [
+            "uncertainty_management"
+          ]
+        },
+        "28": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "29": {
+          "function_tags": [
+            "active_computation"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 14,
+      "num_chunks": 28,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "26": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "27": {
+          "function_tags": [
+            "unknown"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 15,
+      "num_chunks": 29,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "26": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "27": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "28": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 16,
+      "num_chunks": 27,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "plan_generation",
+            "fact_retrieval"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "plan_generation",
+            "fact_retrieval"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "26": {
+          "function_tags": [
+            "active_computation"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 17,
+      "num_chunks": 33,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "uncertainty_management"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "plan_generation"
           ]
         },
         "3": {
@@ -187,28 +2545,27 @@
         },
         "7": {
           "function_tags": [
-            "plan_generation",
-            "fact_retrieval"
+            "plan_generation"
           ]
         },
         "8": {
           "function_tags": [
-            "fact_retrieval"
+            "active_computation"
           ]
         },
         "9": {
           "function_tags": [
-            "active_computation"
+            "result_consolidation"
           ]
         },
         "10": {
           "function_tags": [
-            "result_consolidation"
+            "active_computation"
           ]
         },
         "11": {
           "function_tags": [
-            "final_answer_emission"
+            "active_computation"
           ]
         },
         "12": {
@@ -238,7 +2595,7 @@
         },
         "17": {
           "function_tags": [
-            "self_checking"
+            "final_answer_emission"
           ]
         },
         "18": {
@@ -248,17 +2605,3293 @@
         },
         "19": {
           "function_tags": [
-            "uncertainty_management"
+            "fact_retrieval"
           ]
         },
         "20": {
           "function_tags": [
+            "active_computation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "26": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "27": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "28": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "29": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "30": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "31": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "32": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 18,
+      "num_chunks": 33,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "plan_generation",
+            "active_computation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "17": {
+          "function_tags": [
             "uncertainty_management"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "26": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "27": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "28": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "29": {
+          "function_tags": [
+            "uncertainty_management"
+          ]
+        },
+        "30": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "31": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "32": {
+          "function_tags": [
+            "self_checking"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 19,
+      "num_chunks": 23,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "plan_generation",
+            "fact_retrieval"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 20,
+      "num_chunks": 7,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "plan_generation",
+            "fact_retrieval"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 21,
+      "num_chunks": 22,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "uncertainty_management"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 22,
+      "num_chunks": 26,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "active_computation"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 23,
+      "num_chunks": 29,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "26": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "27": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "28": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 24,
+      "num_chunks": 7,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation",
+            "fact_retrieval"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "result_consolidation",
+            "final_answer_emission"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 25,
+      "num_chunks": 24,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 26,
+      "num_chunks": 26,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "uncertainty_management"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "uncertainty_management"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "self_checking"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 27,
+      "num_chunks": 18,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation",
+            "active_computation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "plan_generation",
+            "active_computation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "uncertainty_management"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 28,
+      "num_chunks": 31,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "26": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "27": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "28": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "29": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "30": {
+          "function_tags": [
+            "unknown"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 29,
+      "num_chunks": 29,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "26": {
+          "function_tags": [
+            "result_consolidation",
+            "final_answer_emission"
+          ]
+        },
+        "27": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "28": {
+          "function_tags": [
+            "unknown"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 30,
+      "num_chunks": 25,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "self_checking"
           ]
         },
         "21": {
           "function_tags": [
             "self_checking"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 31,
+      "num_chunks": 10,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "result_consolidation",
+            "final_answer_emission"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 32,
+      "num_chunks": 30,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "26": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "27": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "28": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "29": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 33,
+      "num_chunks": 27,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "problem_setup",
+            "self_checking"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "26": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 34,
+      "num_chunks": 31,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "26": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "27": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "28": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "29": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "30": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 35,
+      "num_chunks": 26,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "uncertainty_management"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "uncertainty_management"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "uncertainty_management"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "self_checking"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 36,
+      "num_chunks": 30,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "26": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "27": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "28": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "29": {
+          "function_tags": [
+            "active_computation"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 37,
+      "num_chunks": 26,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 38,
+      "num_chunks": 29,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "plan_generation",
+            "active_computation"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation",
+            "active_computation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "plan_generation",
+            "active_computation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "uncertainty_management"
+          ]
+        },
+        "26": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "27": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "28": {
+          "function_tags": [
+            "self_checking"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 39,
+      "num_chunks": 31,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "26": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "27": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "28": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "29": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "30": {
+          "function_tags": [
+            "active_computation"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 40,
+      "num_chunks": 26,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "plan_generation",
+            "fact_retrieval"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "plan_generation",
+            "fact_retrieval"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "23": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "24": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "25": {
+          "function_tags": [
+            "active_computation"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 41,
+      "num_chunks": 23,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "22": {
+          "function_tags": [
+            "active_computation"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 42,
+      "num_chunks": 28,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "problem_setup",
+            "active_computation"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "unknown"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "7": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "8": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "9": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "10": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "11": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "12": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "13": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "14": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "15": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "16": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "17": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "18": {
+          "function_tags": [
+            "self_checking"
+          ]
+        },
+        "19": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "20": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "21": {
+          "function_tags": [
+            "final_answer_emission"
           ]
         },
         "22": {
@@ -280,11 +5913,21 @@
           "function_tags": [
             "final_answer_emission"
           ]
+        },
+        "26": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        },
+        "27": {
+          "function_tags": [
+            "active_computation"
+          ]
         }
       }
     },
     {
-      "example_index": 2,
+      "example_index": 43,
       "num_chunks": 28,
       "categories": {
         "0": {
@@ -299,12 +5942,12 @@
         },
         "2": {
           "function_tags": [
-            "self_checking"
+            "problem_setup"
           ]
         },
         "3": {
           "function_tags": [
-            "self_checking"
+            "plan_generation"
           ]
         },
         "4": {
@@ -314,17 +5957,18 @@
         },
         "5": {
           "function_tags": [
-            "result_consolidation"
+            "plan_generation"
           ]
         },
         "6": {
           "function_tags": [
-            "final_answer_emission"
+            "plan_generation",
+            "active_computation"
           ]
         },
         "7": {
           "function_tags": [
-            "plan_generation"
+            "active_computation"
           ]
         },
         "8": {
@@ -339,17 +5983,17 @@
         },
         "10": {
           "function_tags": [
-            "active_computation"
+            "plan_generation"
           ]
         },
         "11": {
           "function_tags": [
-            "active_computation"
+            "plan_generation"
           ]
         },
         "12": {
           "function_tags": [
-            "result_consolidation"
+            "plan_generation"
           ]
         },
         "13": {
@@ -374,17 +6018,17 @@
         },
         "17": {
           "function_tags": [
-            "active_computation"
+            "final_answer_emission"
           ]
         },
         "18": {
           "function_tags": [
-            "result_consolidation"
+            "uncertainty_management"
           ]
         },
         "19": {
           "function_tags": [
-            "final_answer_emission"
+            "self_checking"
           ]
         },
         "20": {
@@ -399,310 +6043,38 @@
         },
         "22": {
           "function_tags": [
-            "plan_generation"
+            "self_checking"
           ]
         },
         "23": {
           "function_tags": [
-            "plan_generation"
+            "self_checking"
           ]
         },
         "24": {
           "function_tags": [
-            "active_computation"
+            "uncertainty_management"
           ]
         },
         "25": {
           "function_tags": [
-            "active_computation"
+            "uncertainty_management"
           ]
         },
         "26": {
           "function_tags": [
-            "result_consolidation"
+            "uncertainty_management"
           ]
         },
         "27": {
           "function_tags": [
-            "self_checking"
-          ]
-        }
-      }
-    },
-    {
-      "example_index": 3,
-      "num_chunks": 25,
-      "categories": {
-        "0": {
-          "function_tags": [
-            "problem_setup"
-          ]
-        },
-        "1": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "2": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "3": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "4": {
-          "function_tags": [
-            "fact_retrieval"
-          ]
-        },
-        "5": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "6": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "7": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "8": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "9": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "10": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "11": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "12": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "13": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "14": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "15": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "16": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "17": {
-          "function_tags": [
-            "uncertainty_management"
-          ]
-        },
-        "18": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "19": {
-          "function_tags": [
-            "fact_retrieval"
-          ]
-        },
-        "20": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "21": {
-          "function_tags": [
-            "uncertainty_management"
-          ]
-        },
-        "22": {
-          "function_tags": [
-            "fact_retrieval"
-          ]
-        },
-        "23": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "24": {
-          "function_tags": [
-            "uncertainty_management"
-          ]
-        }
-      }
-    },
-    {
-      "example_index": 4,
-      "num_chunks": 27,
-      "categories": {
-        "0": {
-          "function_tags": [
-            "problem_setup"
-          ]
-        },
-        "1": {
-          "function_tags": [
-            "problem_setup"
-          ]
-        },
-        "2": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "3": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "4": {
-          "function_tags": [
-            "fact_retrieval"
-          ]
-        },
-        "5": {
-          "function_tags": [
-            "fact_retrieval"
-          ]
-        },
-        "6": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "7": {
-          "function_tags": [
-            "fact_retrieval"
-          ]
-        },
-        "8": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "9": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "10": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "11": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "12": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "13": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "14": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "15": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "16": {
-          "function_tags": [
-            "final_answer_emission"
-          ]
-        },
-        "17": {
-          "function_tags": [
-            "self_checking"
-          ]
-        },
-        "18": {
-          "function_tags": [
-            "final_answer_emission"
-          ]
-        },
-        "19": {
-          "function_tags": [
-            "self_checking"
-          ]
-        },
-        "20": {
-          "function_tags": [
-            "self_checking"
-          ]
-        },
-        "21": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "22": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "23": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "24": {
-          "function_tags": [
-            "final_answer_emission"
-          ]
-        },
-        "25": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "26": {
-          "function_tags": [
             "unknown"
           ]
         }
       }
     },
     {
-      "example_index": 5,
+      "example_index": 44,
       "num_chunks": 31,
       "categories": {
         "0": {
@@ -712,42 +6084,45 @@
         },
         "1": {
           "function_tags": [
-            "uncertainty_management"
+            "plan_generation",
+            "fact_retrieval"
           ]
         },
         "2": {
           "function_tags": [
-            "plan_generation"
+            "active_computation"
           ]
         },
         "3": {
           "function_tags": [
-            "unknown"
+            "plan_generation"
           ]
         },
         "4": {
           "function_tags": [
-            "unknown"
+            "plan_generation"
           ]
         },
         "5": {
           "function_tags": [
-            "unknown"
+            "plan_generation"
           ]
         },
         "6": {
           "function_tags": [
-            "active_computation"
+            "plan_generation",
+            "fact_retrieval"
           ]
         },
         "7": {
           "function_tags": [
-            "result_consolidation"
+            "plan_generation",
+            "fact_retrieval"
           ]
         },
         "8": {
           "function_tags": [
-            "active_computation"
+            "plan_generation"
           ]
         },
         "9": {
@@ -757,17 +6132,17 @@
         },
         "10": {
           "function_tags": [
-            "active_computation"
+            "plan_generation"
           ]
         },
         "11": {
           "function_tags": [
-            "active_computation"
+            "plan_generation"
           ]
         },
         "12": {
           "function_tags": [
-            "final_answer_emission"
+            "active_computation"
           ]
         },
         "13": {
@@ -782,37 +6157,37 @@
         },
         "15": {
           "function_tags": [
-            "active_computation"
+            "final_answer_emission"
           ]
         },
         "16": {
           "function_tags": [
-            "active_computation"
+            "self_checking"
           ]
         },
         "17": {
           "function_tags": [
-            "final_answer_emission"
+            "plan_generation"
           ]
         },
         "18": {
           "function_tags": [
-            "result_consolidation"
+            "plan_generation"
           ]
         },
         "19": {
           "function_tags": [
-            "problem_setup"
+            "active_computation"
           ]
         },
         "20": {
           "function_tags": [
-            "result_consolidation"
+            "active_computation"
           ]
         },
         "21": {
           "function_tags": [
-            "active_computation"
+            "final_answer_emission"
           ]
         },
         "22": {
@@ -827,12 +6202,12 @@
         },
         "24": {
           "function_tags": [
-            "active_computation"
+            "self_checking"
           ]
         },
         "25": {
           "function_tags": [
-            "final_answer_emission"
+            "self_checking"
           ]
         },
         "26": {
@@ -842,145 +6217,29 @@
         },
         "27": {
           "function_tags": [
-            "plan_generation"
+            "self_checking"
           ]
         },
         "28": {
           "function_tags": [
-            "active_computation"
+            "unknown"
           ]
         },
         "29": {
           "function_tags": [
-            "active_computation"
+            "unknown"
           ]
         },
         "30": {
           "function_tags": [
-            "final_answer_emission"
-          ]
-        }
-      }
-    },
-    {
-      "example_index": 6,
-      "num_chunks": 22,
-      "categories": {
-        "0": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "1": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "2": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "3": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "4": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "5": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "6": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "7": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "8": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "9": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "10": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "11": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "12": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "13": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "14": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "15": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "16": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "17": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "18": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "19": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "20": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "21": {
-          "function_tags": [
             "unknown"
           ]
         }
       }
     },
     {
-      "example_index": 7,
-      "num_chunks": 35,
+      "example_index": 45,
+      "num_chunks": 34,
       "categories": {
         "0": {
           "function_tags": [
@@ -999,52 +6258,52 @@
         },
         "3": {
           "function_tags": [
-            "unknown"
+            "problem_setup"
           ]
         },
         "4": {
           "function_tags": [
-            "plan_generation"
+            "unknown"
           ]
         },
         "5": {
           "function_tags": [
-            "plan_generation"
+            "unknown"
           ]
         },
         "6": {
           "function_tags": [
-            "plan_generation"
+            "unknown"
           ]
         },
         "7": {
           "function_tags": [
-            "plan_generation"
+            "active_computation"
           ]
         },
         "8": {
           "function_tags": [
-            "plan_generation"
+            "unknown"
           ]
         },
         "9": {
           "function_tags": [
-            "active_computation"
+            "unknown"
           ]
         },
         "10": {
           "function_tags": [
-            "fact_retrieval"
+            "final_answer_emission"
           ]
         },
         "11": {
           "function_tags": [
-            "fact_retrieval"
+            "plan_generation"
           ]
         },
         "12": {
           "function_tags": [
-            "result_consolidation"
+            "active_computation"
           ]
         },
         "13": {
@@ -1054,7 +6313,7 @@
         },
         "14": {
           "function_tags": [
-            "uncertainty_management"
+            "active_computation"
           ]
         },
         "15": {
@@ -1064,12 +6323,12 @@
         },
         "16": {
           "function_tags": [
-            "active_computation"
+            "result_consolidation"
           ]
         },
         "17": {
           "function_tags": [
-            "active_computation"
+            "final_answer_emission"
           ]
         },
         "18": {
@@ -1084,12 +6343,12 @@
         },
         "20": {
           "function_tags": [
-            "final_answer_emission"
+            "active_computation"
           ]
         },
         "21": {
           "function_tags": [
-            "self_checking"
+            "result_consolidation"
           ]
         },
         "22": {
@@ -1099,7 +6358,7 @@
         },
         "23": {
           "function_tags": [
-            "uncertainty_management"
+            "self_checking"
           ]
         },
         "24": {
@@ -1109,32 +6368,33 @@
         },
         "25": {
           "function_tags": [
-            "active_computation"
+            "self_checking"
           ]
         },
         "26": {
           "function_tags": [
-            "final_answer_emission"
+            "active_computation"
           ]
         },
         "27": {
           "function_tags": [
-            "final_answer_emission"
+            "active_computation"
           ]
         },
         "28": {
           "function_tags": [
+            "result_consolidation",
             "final_answer_emission"
           ]
         },
         "29": {
           "function_tags": [
-            "final_answer_emission"
+            "self_checking"
           ]
         },
         "30": {
           "function_tags": [
-            "self_checking"
+            "uncertainty_management"
           ]
         },
         "31": {
@@ -1149,173 +6409,14 @@
         },
         "33": {
           "function_tags": [
-            "final_answer_emission"
-          ]
-        },
-        "34": {
-          "function_tags": [
-            "final_answer_emission"
+            "uncertainty_management"
           ]
         }
       }
     },
     {
-      "example_index": 8,
-      "num_chunks": 6,
-      "categories": {
-        "0": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "1": {
-          "function_tags": [
-            "fact_retrieval"
-          ]
-        },
-        "2": {
-          "function_tags": [
-            "active_computation",
-            "result_consolidation"
-          ]
-        },
-        "3": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "4": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "5": {
-          "function_tags": [
-            "active_computation",
-            "result_consolidation"
-          ]
-        }
-      }
-    },
-    {
-      "example_index": 9,
-      "num_chunks": 22,
-      "categories": {
-        "0": {
-          "function_tags": [
-            "problem_setup"
-          ]
-        },
-        "1": {
-          "function_tags": [
-            "problem_setup"
-          ]
-        },
-        "2": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "3": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "4": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "5": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "6": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "7": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "8": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "9": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "10": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "11": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "12": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "13": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "14": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "15": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "16": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "17": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "18": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "19": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "20": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "21": {
-          "function_tags": [
-            "final_answer_emission"
-          ]
-        }
-      }
-    },
-    {
-      "example_index": 10,
-      "num_chunks": 30,
+      "example_index": 46,
+      "num_chunks": 31,
       "categories": {
         "0": {
           "function_tags": [
@@ -1466,401 +6567,99 @@
           "function_tags": [
             "unknown"
           ]
-        }
-      }
-    },
-    {
-      "example_index": 11,
-      "num_chunks": 17,
-      "categories": {
-        "0": {
-          "function_tags": [
-            "problem_setup"
-          ]
         },
-        "1": {
-          "function_tags": [
-            "problem_setup"
-          ]
-        },
-        "2": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "3": {
-          "function_tags": [
-            "problem_setup"
-          ]
-        },
-        "4": {
-          "function_tags": [
-            "fact_retrieval"
-          ]
-        },
-        "5": {
-          "function_tags": [
-            "fact_retrieval"
-          ]
-        },
-        "6": {
-          "function_tags": [
-            "fact_retrieval"
-          ]
-        },
-        "7": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "8": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "9": {
-          "function_tags": [
-            "problem_setup"
-          ]
-        },
-        "10": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "11": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "12": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "13": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "14": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "15": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "16": {
-          "function_tags": [
-            "active_computation"
-          ]
-        }
-      }
-    },
-    {
-      "example_index": 12,
-      "num_chunks": 30,
-      "categories": {
-        "0": {
-          "function_tags": [
-            "problem_setup"
-          ]
-        },
-        "1": {
-          "function_tags": [
-            "problem_setup",
-            "self_checking"
-          ]
-        },
-        "2": {
-          "function_tags": [
-            "problem_setup"
-          ]
-        },
-        "3": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "4": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "5": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "6": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "7": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "8": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "9": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "10": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "11": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "12": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "13": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "14": {
-          "function_tags": [
-            "uncertainty_management"
-          ]
-        },
-        "15": {
-          "function_tags": [
-            "uncertainty_management"
-          ]
-        },
-        "16": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "17": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "18": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "19": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "20": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "21": {
-          "function_tags": [
-            "final_answer_emission"
-          ]
-        },
-        "22": {
-          "function_tags": [
-            "final_answer_emission"
-          ]
-        },
-        "23": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "24": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "25": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "26": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "27": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "28": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "29": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        }
-      }
-    },
-    {
-      "example_index": 13,
-      "num_chunks": 27,
-      "categories": {
-        "0": {
-          "function_tags": [
-            "problem_setup"
-          ]
-        },
-        "1": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "2": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "3": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "4": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "5": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "6": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "7": {
-          "function_tags": [
-            "final_answer_emission"
-          ]
-        },
-        "8": {
+        "30": {
           "function_tags": [
             "unknown"
           ]
-        },
-        "9": {
+        }
+      }
+    },
+    {
+      "example_index": 47,
+      "num_chunks": 7,
+      "categories": {
+        "0": {
           "function_tags": [
             "plan_generation"
           ]
         },
-        "10": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "11": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "12": {
+        "1": {
           "function_tags": [
             "active_computation"
           ]
         },
-        "13": {
+        "2": {
           "function_tags": [
             "active_computation"
           ]
         },
-        "14": {
+        "3": {
           "function_tags": [
             "active_computation"
           ]
         },
-        "15": {
+        "4": {
           "function_tags": [
             "active_computation"
           ]
         },
-        "16": {
+        "5": {
           "function_tags": [
+            "active_computation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "result_consolidation",
             "final_answer_emission"
-          ]
-        },
-        "17": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "18": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "19": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "20": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "21": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "22": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "23": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "24": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "25": {
-          "function_tags": [
-            "final_answer_emission",
-            "self_checking"
-          ]
-        },
-        "26": {
-          "function_tags": [
-            "self_checking"
           ]
         }
       }
     },
     {
-      "example_index": 14,
+      "example_index": 48,
+      "num_chunks": 7,
+      "categories": {
+        "0": {
+          "function_tags": [
+            "problem_setup"
+          ]
+        },
+        "1": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "2": {
+          "function_tags": [
+            "fact_retrieval"
+          ]
+        },
+        "3": {
+          "function_tags": [
+            "plan_generation"
+          ]
+        },
+        "4": {
+          "function_tags": [
+            "active_computation"
+          ]
+        },
+        "5": {
+          "function_tags": [
+            "result_consolidation"
+          ]
+        },
+        "6": {
+          "function_tags": [
+            "final_answer_emission"
+          ]
+        }
+      }
+    },
+    {
+      "example_index": 49,
       "num_chunks": 31,
       "categories": {
         "0": {
@@ -1875,42 +6674,42 @@
         },
         "2": {
           "function_tags": [
-            "problem_setup"
+            "unknown"
           ]
         },
         "3": {
           "function_tags": [
-            "problem_setup"
+            "plan_generation"
           ]
         },
         "4": {
           "function_tags": [
-            "problem_setup"
+            "plan_generation"
           ]
         },
         "5": {
           "function_tags": [
-            "unknown"
+            "active_computation"
           ]
         },
         "6": {
           "function_tags": [
-            "plan_generation"
+            "fact_retrieval"
           ]
         },
         "7": {
           "function_tags": [
-            "plan_generation"
+            "active_computation"
           ]
         },
         "8": {
           "function_tags": [
-            "fact_retrieval"
+            "plan_generation"
           ]
         },
         "9": {
           "function_tags": [
-            "fact_retrieval"
+            "active_computation"
           ]
         },
         "10": {
@@ -1920,7 +6719,7 @@
         },
         "11": {
           "function_tags": [
-            "active_computation"
+            "fact_retrieval"
           ]
         },
         "12": {
@@ -1930,67 +6729,67 @@
         },
         "13": {
           "function_tags": [
-            "result_consolidation"
+            "active_computation"
           ]
         },
         "14": {
           "function_tags": [
-            "final_answer_emission"
+            "result_consolidation"
           ]
         },
         "15": {
           "function_tags": [
-            "active_computation"
+            "self_checking"
           ]
         },
         "16": {
           "function_tags": [
-            "active_computation"
+            "self_checking"
           ]
         },
         "17": {
           "function_tags": [
-            "active_computation"
+            "self_checking"
           ]
         },
         "18": {
           "function_tags": [
-            "active_computation"
+            "final_answer_emission"
           ]
         },
         "19": {
           "function_tags": [
-            "active_computation"
+            "result_consolidation"
           ]
         },
         "20": {
           "function_tags": [
-            "result_consolidation"
+            "plan_generation"
           ]
         },
         "21": {
           "function_tags": [
-            "active_computation"
+            "plan_generation"
           ]
         },
         "22": {
           "function_tags": [
-            "plan_generation"
+            "active_computation"
           ]
         },
         "23": {
           "function_tags": [
-            "fact_retrieval"
+            "active_computation"
           ]
         },
         "24": {
           "function_tags": [
-            "active_computation"
+            "plan_generation"
           ]
         },
         "25": {
           "function_tags": [
-            "active_computation"
+            "plan_generation"
           ]
         },
         "26": {
@@ -2000,685 +6799,22 @@
         },
         "27": {
           "function_tags": [
-            "plan_generation"
+            "result_consolidation"
           ]
         },
         "28": {
           "function_tags": [
-            "plan_generation"
+            "final_answer_emission"
           ]
         },
         "29": {
           "function_tags": [
-            "plan_generation"
+            "self_checking"
           ]
         },
         "30": {
           "function_tags": [
-            "result_consolidation",
-            "final_answer_emission"
-          ]
-        }
-      }
-    },
-    {
-      "example_index": 15,
-      "num_chunks": 22,
-      "categories": {
-        "0": {
-          "function_tags": [
-            "problem_setup"
-          ]
-        },
-        "1": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "2": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "3": {
-          "function_tags": [
-            "problem_setup"
-          ]
-        },
-        "4": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "5": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "6": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "7": {
-          "function_tags": [
-            "problem_setup"
-          ]
-        },
-        "8": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "9": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "10": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "11": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "12": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "13": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "14": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "15": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "16": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "17": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "18": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "19": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "20": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "21": {
-          "function_tags": [
-            "unknown"
-          ]
-        }
-      }
-    },
-    {
-      "example_index": 16,
-      "num_chunks": 24,
-      "categories": {
-        "0": {
-          "function_tags": [
-            "problem_setup"
-          ]
-        },
-        "1": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "2": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "3": {
-          "function_tags": [
-            "fact_retrieval"
-          ]
-        },
-        "4": {
-          "function_tags": [
-            "fact_retrieval"
-          ]
-        },
-        "5": {
-          "function_tags": [
-            "plan_generation",
-            "fact_retrieval"
-          ]
-        },
-        "6": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "7": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "8": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "9": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "10": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "11": {
-          "function_tags": [
-            "fact_retrieval"
-          ]
-        },
-        "12": {
-          "function_tags": [
-            "fact_retrieval"
-          ]
-        },
-        "13": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "14": {
-          "function_tags": [
-            "fact_retrieval"
-          ]
-        },
-        "15": {
-          "function_tags": [
             "self_checking"
-          ]
-        },
-        "16": {
-          "function_tags": [
-            "self_checking"
-          ]
-        },
-        "17": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "18": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "19": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "20": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "21": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "22": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "23": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        }
-      }
-    },
-    {
-      "example_index": 17,
-      "num_chunks": 27,
-      "categories": {
-        "0": {
-          "function_tags": [
-            "problem_setup"
-          ]
-        },
-        "1": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "2": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "3": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "4": {
-          "function_tags": [
-            "fact_retrieval"
-          ]
-        },
-        "5": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "6": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "7": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "8": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "9": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "10": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "11": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "12": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "13": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "14": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "15": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "16": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "17": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "18": {
-          "function_tags": [
-            "final_answer_emission"
-          ]
-        },
-        "19": {
-          "function_tags": [
-            "final_answer_emission"
-          ]
-        },
-        "20": {
-          "function_tags": [
-            "self_checking"
-          ]
-        },
-        "21": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "22": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "23": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "24": {
-          "function_tags": [
-            "final_answer_emission"
-          ]
-        },
-        "25": {
-          "function_tags": [
-            "final_answer_emission"
-          ]
-        },
-        "26": {
-          "function_tags": [
-            "final_answer_emission"
-          ]
-        }
-      }
-    },
-    {
-      "example_index": 18,
-      "num_chunks": 28,
-      "categories": {
-        "0": {
-          "function_tags": [
-            "problem_setup"
-          ]
-        },
-        "1": {
-          "function_tags": [
-            "problem_setup"
-          ]
-        },
-        "2": {
-          "function_tags": [
-            "problem_setup"
-          ]
-        },
-        "3": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "4": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "5": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "6": {
-          "function_tags": [
-            "plan_generation",
-            "active_computation"
-          ]
-        },
-        "7": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "8": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "9": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "10": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "11": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "12": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "13": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "14": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "15": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "16": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "17": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "18": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "19": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "20": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "21": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "22": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "23": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "24": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "25": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "26": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "27": {
-          "function_tags": [
-            "final_answer_emission"
-          ]
-        }
-      }
-    },
-    {
-      "example_index": 19,
-      "num_chunks": 24,
-      "categories": {
-        "0": {
-          "function_tags": [
-            "problem_setup"
-          ]
-        },
-        "1": {
-          "function_tags": [
-            "uncertainty_management"
-          ]
-        },
-        "2": {
-          "function_tags": [
-            "plan_generation",
-            "fact_retrieval"
-          ]
-        },
-        "3": {
-          "function_tags": [
-            "unknown"
-          ]
-        },
-        "4": {
-          "function_tags": [
-            "fact_retrieval"
-          ]
-        },
-        "5": {
-          "function_tags": [
-            "plan_generation",
-            "fact_retrieval"
-          ]
-        },
-        "6": {
-          "function_tags": [
-            "plan_generation",
-            "fact_retrieval"
-          ]
-        },
-        "7": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "8": {
-          "function_tags": [
-            "uncertainty_management"
-          ]
-        },
-        "9": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "10": {
-          "function_tags": [
-            "plan_generation",
-            "fact_retrieval"
-          ]
-        },
-        "11": {
-          "function_tags": [
-            "active_computation"
-          ]
-        },
-        "12": {
-          "function_tags": [
-            "result_consolidation"
-          ]
-        },
-        "13": {
-          "function_tags": [
-            "final_answer_emission"
-          ]
-        },
-        "14": {
-          "function_tags": [
-            "self_checking"
-          ]
-        },
-        "15": {
-          "function_tags": [
-            "self_checking"
-          ]
-        },
-        "16": {
-          "function_tags": [
-            "self_checking"
-          ]
-        },
-        "17": {
-          "function_tags": [
-            "final_answer_emission"
-          ]
-        },
-        "18": {
-          "function_tags": [
-            "uncertainty_management"
-          ]
-        },
-        "19": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "20": {
-          "function_tags": [
-            "fact_retrieval"
-          ]
-        },
-        "21": {
-          "function_tags": [
-            "plan_generation"
-          ]
-        },
-        "22": {
-          "function_tags": [
-            "fact_retrieval"
-          ]
-        },
-        "23": {
-          "function_tags": [
-            "plan_generation",
-            "fact_retrieval"
           ]
         }
       }
