@@ -754,22 +754,27 @@ except Exception:  # pragma: no cover
 
 
 def forward_with_logits(model, *, input_ids, attention_mask):
-    """Return logits from a forward pass, projecting via lm_head if needed."""
-    outputs = model.model(
-        input_ids=input_ids,
-        attention_mask=attention_mask,
-        use_cache=False,
-        output_hidden_states=True,
-        return_dict=True,
-    )
-    logits = getattr(outputs, "logits", None)
-    if logits is None:
-        last_hidden = outputs.last_hidden_state if hasattr(outputs, "last_hidden_state") else outputs[0]
-        head_owner = model if hasattr(model, "lm_head") else (model.model if hasattr(model.model, "lm_head") else None)
-        if head_owner is None:
-            raise AttributeError("Could not find lm_head on model or model.model")
-        logits = head_owner.lm_head(last_hidden)
-    return logits
+    """Return logits from a forward pass, projecting via lm_head if needed.
+
+    Executed under torch.no_grad() to avoid building graphs during analysis.
+    """
+    import contextlib
+    with torch.no_grad() if torch is not None else contextlib.nullcontext():
+        outputs = model.model(
+            input_ids=input_ids,
+            attention_mask=attention_mask,
+            use_cache=False,
+            output_hidden_states=True,
+            return_dict=True,
+        )
+        logits = getattr(outputs, "logits", None)
+        if logits is None:
+            last_hidden = outputs.last_hidden_state if hasattr(outputs, "last_hidden_state") else outputs[0]
+            head_owner = model if hasattr(model, "lm_head") else (model.model if hasattr(model.model, "lm_head") else None)
+            if head_owner is None:
+                raise AttributeError("Could not find lm_head on model or model.model")
+            logits = head_owner.lm_head(last_hidden)
+        return logits
 
 
 def kl_from_logits(avg_logits_p, avg_logits_q):
@@ -816,6 +821,7 @@ def logits_with_steer_full(
 
     handle = target.register_forward_hook(hook)
     try:
+        # no_grad handled inside forward_with_logits
         return forward_with_logits(model, input_ids=input_ids, attention_mask=attention_mask)
     finally:
         handle.remove()
