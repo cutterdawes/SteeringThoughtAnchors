@@ -743,6 +743,170 @@ def normalize_answer(answer: str, use_sympy: bool = False) -> str:
 
     return normalized
 
+# -----------------------------------------------------------------------------
+# Steering/logit utilities for notebooks (3a/3aii/reporting)
+# -----------------------------------------------------------------------------
+
+try:
+    import torch  # type: ignore
+except Exception:  # pragma: no cover
+    torch = None  # type: ignore
+
+
+def forward_with_logits(model, *, input_ids, attention_mask):
+    """Return logits from a forward pass, projecting via lm_head if needed."""
+    outputs = model.model(
+        input_ids=input_ids,
+        attention_mask=attention_mask,
+        use_cache=False,
+        output_hidden_states=True,
+        return_dict=True,
+    )
+    logits = getattr(outputs, "logits", None)
+    if logits is None:
+        last_hidden = outputs.last_hidden_state if hasattr(outputs, "last_hidden_state") else outputs[0]
+        head_owner = model if hasattr(model, "lm_head") else (model.model if hasattr(model.model, "lm_head") else None)
+        if head_owner is None:
+            raise AttributeError("Could not find lm_head on model or model.model")
+        logits = head_owner.lm_head(last_hidden)
+    return logits
+
+
+def kl_from_logits(avg_logits_p, avg_logits_q):
+    """Token-averaged KL between two average logits tensors (P || Q)."""
+    logp = torch.log_softmax(avg_logits_p, dim=-1)
+    logq = torch.log_softmax(avg_logits_q, dim=-1)
+    p = torch.exp(logp)
+    return torch.sum(p * (logp - logq), dim=-1)
+
+
+def logits_with_steer_full(
+    model,
+    *,
+    input_ids: "torch.Tensor",
+    attention_mask: "torch.Tensor",
+    beta: float,
+    layer_idx: int,
+    steer_vec: "torch.Tensor",
+    target_pos: int,
+):
+    """Apply an RMS-scaled steering delta at a single position in a layer, then return logits."""
+    backbone = getattr(model.model, "model", model.model)
+    target = backbone.layers[int(layer_idx)]
+    d = steer_vec.detach().to(torch.float32)
+    d = d / (d.norm() + 1e-12)
+
+    def hook(module, inputs, output):
+        out = output
+        try:
+            if isinstance(out, tuple):
+                h = out[0].clone(); rest = out[1:]
+            else:
+                h = out.clone(); rest = tuple()
+            pos = int(target_pos)
+            if pos < 0 or pos >= h.shape[1]:
+                return output
+            h_slice_fp32 = h[:, pos:pos+1, :].to(torch.float32)
+            rms = torch.sqrt(torch.mean(h_slice_fp32 ** 2) + 1e-20)
+            delta_fp32 = (float(beta) * rms) * d.view(1, 1, -1)
+            h[:, pos:pos+1, :] = (h_slice_fp32 + delta_fp32).to(h.dtype)
+            return (h,) + rest if isinstance(out, tuple) else h
+        except Exception:
+            return output
+
+    handle = target.register_forward_hook(hook)
+    try:
+        return forward_with_logits(model, input_ids=input_ids, attention_mask=attention_mask)
+    finally:
+        handle.remove()
+
+
+def find_chunk_start_token(tokenizer, question: str, prefix_text: str, chunk_text: str, device: str):
+    """Build and encode the forced prompt, returning tokenized spans and indices."""
+    prompt_prefix = (
+        "Solve the following problem step by step. You MUST put your final answer in \\boxed{}.\n\n"
+        + f"Problem: {question}\n\n"
+        + "Solution:\n<think>\n"
+        + (prefix_text or "")
+    )
+    enc_prefix = tokenizer(prompt_prefix, return_tensors="pt")
+    ids_pref = enc_prefix["input_ids"].to(device)
+    pad_id = tokenizer.pad_token_id if tokenizer.pad_token_id is not None else (getattr(tokenizer, "eos_token_id", 0) or 0)
+    am_pref = (ids_pref != pad_id).long().to(device)
+    enc_full = tokenizer(prompt_prefix + (chunk_text or ""), return_tensors="pt")
+    ids_full = enc_full["input_ids"].to(device)
+    am_full = (ids_full != pad_id).long().to(device)
+    full_ids = ids_full[0].tolist()
+    chunk_seq = tokenizer(chunk_text or "", return_tensors="pt", add_special_tokens=False)["input_ids"][0].tolist()
+    s_idx = -1
+    for pos in range(max(0, ids_pref.shape[-1]-4), len(full_ids)-len(chunk_seq)+1):
+        if full_ids[pos:pos+len(chunk_seq)] == chunk_seq:
+            s_idx = pos
+            break
+    if s_idx == -1:
+        s_idx = int(ids_pref.shape[-1])
+    return ids_pref, am_pref, ids_full, am_full, int(s_idx), len(chunk_seq)
+
+
+def compute_kl_curve_for_chunk(
+    model,
+    tokenizer,
+    example: Dict,
+    anchors_ex: Dict,
+    *,
+    layer_idx: int,
+    betas: "np.ndarray",
+    device: str,
+    chunk_index: Optional[int] = None,
+) -> List[float]:
+    """Compute a KL(beta) curve for a specific chunk using its steer vector."""
+    import numpy as _np  # local import to avoid top-level dependency
+    cot_text = example.get("cot") or ""
+    try:
+        chunks = split_solution_into_chunks(cot_text)
+    except Exception:
+        chunks = []
+    if not chunks:
+        return []
+    idx = int(chunk_index) if chunk_index is not None else 0
+    if idx < 0 or idx >= len(chunks):
+        return []
+    prefix_text = "\n".join(chunks[:idx])
+    chunk_text = chunks[idx]
+    ids_pref, am_pref, ids_full, am_full, s_idx, n_steps = find_chunk_start_token(
+        tokenizer, example.get("prompt", ""), prefix_text, chunk_text, device
+    )
+    logits_full = forward_with_logits(model, input_ids=ids_full, attention_mask=am_full)
+    seq_len = int(logits_full.shape[1])
+    start = max(0, int(s_idx) - 1)
+    n_eff = max(0, min(int(n_steps), int(seq_len - start)))
+    if n_eff == 0:
+        return []
+    base_steps = logits_full[:, start:start + n_eff, :]
+    base_avg = base_steps.mean(dim=1)
+    # per-chunk vector
+    vec_by_idx = {int(ch.get("chunk_index", 0)): ch.get("vector", []) for ch in anchors_ex.get("chunks", [])}
+    v = torch.tensor(vec_by_idx.get(int(idx), []), dtype=torch.float32, device=device)
+    if v.numel() == 0:
+        return []
+    y_curve: List[float] = []
+    for b in betas:
+        logs = logits_with_steer_full(
+            model,
+            input_ids=ids_full,
+            attention_mask=am_full,
+            beta=float(b),
+            layer_idx=int(layer_idx),
+            steer_vec=v,
+            target_pos=int(start),
+        )
+        steered_steps = logs[:, start:start + n_eff, :]
+        steered_avg = steered_steps.mean(dim=1)
+        kl = kl_from_logits(steered_avg, base_avg)
+        y_curve.append(float(kl.item()))
+    return y_curve
+
+
 
 def check_answer(answer: str, gt_answer: str) -> bool:
     """
