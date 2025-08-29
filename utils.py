@@ -865,7 +865,12 @@ def compute_kl_curve_for_chunk(
     device: str,
     chunk_index: Optional[int] = None,
 ) -> List[float]:
-    """Compute a KL(beta) curve for a specific chunk using its steer vector."""
+    """Compute a KL(beta) curve for a specific chunk using its steer vector.
+
+    Matches the original notebook's teacher-forced semantics by averaging the
+    per-token KL divergence across the span, rather than taking KL between
+    averages of logits. This preserves the previous KL curves.
+    """
     import numpy as _np  # local import to avoid top-level dependency
     cot_text = example.get("cot") or ""
     try:
@@ -889,7 +894,6 @@ def compute_kl_curve_for_chunk(
     if n_eff == 0:
         return []
     base_steps = logits_full[:, start:start + n_eff, :]
-    base_avg = base_steps.mean(dim=1)
     # per-chunk vector
     vec_by_idx = {int(ch.get("chunk_index", 0)): ch.get("vector", []) for ch in anchors_ex.get("chunks", [])}
     v = torch.tensor(vec_by_idx.get(int(idx), []), dtype=torch.float32, device=device)
@@ -897,6 +901,10 @@ def compute_kl_curve_for_chunk(
         return []
     y_curve: List[float] = []
     for b in betas:
+        # Keep exact zero at beta==0 to match prior outputs
+        if abs(float(b)) < 1e-12:
+            y_curve.append(0.0)
+            continue
         logs = logits_with_steer_full(
             model,
             input_ids=ids_full,
@@ -907,9 +915,13 @@ def compute_kl_curve_for_chunk(
             target_pos=int(start),
         )
         steered_steps = logs[:, start:start + n_eff, :]
-        steered_avg = steered_steps.mean(dim=1)
-        kl = kl_from_logits(steered_avg, base_avg)
-        y_curve.append(float(kl.item()))
+        # Compute mean of per-token KLs (flatten batch/time)
+        V = steered_steps.shape[-1]
+        kl_t = kl_from_logits(
+            steered_steps.reshape(-1, V),
+            base_steps.reshape(-1, V),
+        )
+        y_curve.append(float(kl_t.mean().item()))
     return y_curve
 
 
