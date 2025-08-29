@@ -764,7 +764,7 @@ def forward_with_logits(model, *, input_ids, attention_mask):
             input_ids=input_ids,
             attention_mask=attention_mask,
             use_cache=False,
-            output_hidden_states=True,
+            output_hidden_states=False,
             return_dict=True,
         )
         logits = getattr(outputs, "logits", None)
