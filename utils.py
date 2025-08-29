@@ -3,16 +3,26 @@ dotenv.load_dotenv("../.env")
 
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
-from nnsight import LanguageModel
+try:  # Optional dependency for model loading
+    from nnsight import LanguageModel
+except Exception:  # pragma: no cover - handled gracefully in tests
+    LanguageModel = None  # type: ignore
 from tqdm import tqdm
 import gc
 import time
 import random
 import torch.nn as nn
-import openai
-import anthropic
+try:  # Optional API clients
+    import openai
+    from openai import OpenAI
+except Exception:  # pragma: no cover
+    openai = None  # type: ignore
+    OpenAI = None  # type: ignore
+try:
+    import anthropic
+except Exception:  # pragma: no cover
+    anthropic = None  # type: ignore
 import os
-from openai import OpenAI
 import json
 import re
 import numpy as np
@@ -301,6 +311,9 @@ def load_model_and_vectors(device="cuda:0", load_in_8bit=False, compute_features
         model_name (str): Name/path of the model to load
         base_model_name (str): Name/path of the base model to load
     """
+    if LanguageModel is None:  # pragma: no cover - runtime guard
+        raise ImportError("nnsight is required to load models")
+
     # Configure compilation behavior before constructing the model
     _configure_nnsight_compile(device)
     model = LanguageModel(model_name, dispatch=True, load_in_8bit=load_in_8bit, device_map=device, torch_dtype=torch.bfloat16)
@@ -1362,3 +1375,134 @@ def load_math_problems(
     except Exception as e:
         print(f"Error loading problems: {e}")
         return []
+
+
+def get_chunk_embeddings(
+    model: "PreTrainedModel",
+    tokenizer: "PreTrainedTokenizer",
+    text: str,
+    device: str = "cpu",
+) -> Tuple[List[str], "torch.Tensor"]:
+    """Compute mean-pooled embeddings for each reasoning chunk.
+
+    The text is split using :func:`split_solution_into_chunks`, and each chunk is
+    fed independently through the model. The final hidden layer is mean-pooled to
+    obtain a single embedding per chunk.
+
+    Args:
+        model: Transformer model with ``output_hidden_states=True``.
+        tokenizer: Tokenizer corresponding to ``model``.
+        text: Full chain-of-thought text.
+        device: Device on which to run the model.
+
+    Returns:
+        A tuple of ``(chunks, embeddings)`` where ``embeddings`` has shape
+        ``[num_chunks, hidden_dim]``. If no chunks are found, returns an empty
+        list and tensor.
+    """
+
+    chunks = split_solution_into_chunks(text)
+    if not chunks:
+        return [], torch.empty(0)
+
+    embeddings = []
+    model = model.to(device)
+    for chunk in chunks:
+        inputs = tokenizer(chunk, return_tensors="pt").to(device)
+        with torch.no_grad():
+            outputs = model(**inputs, output_hidden_states=True)
+        hidden = outputs.hidden_states[-1].mean(dim=1).squeeze(0).to("cpu")
+        embeddings.append(hidden)
+
+    return chunks, torch.stack(embeddings)
+
+
+def compute_trajectory_metrics(embeddings: "torch.Tensor") -> Dict[str, "torch.Tensor"]:
+    """Compute simple distance and direction metrics between chunk embeddings.
+
+    Args:
+        embeddings: Tensor of shape ``[num_chunks, hidden_dim]``.
+
+    Returns:
+        Dictionary containing:
+
+        - ``steps``: difference vectors between consecutive embeddings.
+        - ``distances``: L2 distance of each step.
+        - ``directions``: unit-normalized step vectors.
+    """
+
+    if embeddings.numel() == 0 or embeddings.shape[0] < 2:
+        empty = torch.empty(0)
+        return {"steps": empty, "distances": empty, "directions": empty}
+
+    steps = embeddings[1:] - embeddings[:-1]
+    distances = steps.norm(dim=1)
+    directions = torch.nn.functional.normalize(steps, dim=1)
+    return {"steps": steps, "distances": distances, "directions": directions}
+
+
+def reduce_embeddings(
+    embeddings: "torch.Tensor", method: str = "pca", n_components: int = 2
+) -> np.ndarray:
+    """Project embeddings to a lower-dimensional space for visualization.
+
+    Currently supports principal component analysis (PCA).
+
+    Args:
+        embeddings: Tensor of shape ``[num_chunks, hidden_dim]``.
+        method: Dimensionality reduction method (only ``"pca"`` supported).
+        n_components: Number of dimensions to project to.
+
+    Returns:
+        Numpy array of shape ``[num_chunks, n_components]``.
+    """
+
+    if embeddings.numel() == 0:
+        return np.empty((0, n_components))
+
+    emb_np = embeddings.detach().cpu().numpy()
+    if method == "pca":
+        from sklearn.decomposition import PCA
+
+        pca = PCA(n_components=n_components)
+        return pca.fit_transform(emb_np)
+    raise ValueError(f"Unknown reduction method: {method}")
+
+
+def plot_trajectory(
+    points_2d: np.ndarray,
+    labels: List[str],
+    save_path: Optional[str] = None,
+    title: str = "CoT trajectory",
+):
+    """Plot and optionally save a 2D trajectory of chunk embeddings.
+
+    Args:
+        points_2d: Array of shape ``[num_chunks, 2]``.
+        labels: Text labels for each point (e.g., chunk texts).
+        save_path: Optional path to save the resulting figure.
+        title: Plot title.
+
+    Returns:
+        The ``matplotlib`` figure object for further customization if needed.
+    """
+
+    import matplotlib.pyplot as plt
+    from pathlib import Path
+
+    fig, ax = plt.subplots()
+    if len(points_2d) > 0:
+        ax.plot(points_2d[:, 0], points_2d[:, 1], "-o")
+        for i, (x, y) in enumerate(points_2d):
+            ax.text(x, y, str(i + 1))
+
+    ax.set_xlabel("dim 1")
+    ax.set_ylabel("dim 2")
+    ax.set_title(title)
+
+    if save_path is not None:
+        path = Path(save_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        fig.savefig(path, bbox_inches="tight")
+
+    return fig
