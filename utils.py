@@ -907,6 +907,66 @@ def compute_kl_curve_for_chunk(
     return y_curve
 
 
+# -----------------------------------------------------------------------------
+# Amplitude normalization helpers
+# -----------------------------------------------------------------------------
+from typing import Iterable
+
+def normalize_minmax(values: Iterable[float]) -> list[float]:
+    """Normalize a 1D iterable to [0,1] via min-max; nans become 0.0.
+
+    If all finite values are equal or no finite values exist, returns all 0.0.
+    """
+    import math
+    vals = [float(v) for v in values]
+    finite = [v for v in vals if math.isfinite(v)]
+    if not finite:
+        return [0.0 for _ in vals]
+    vmin = min(finite)
+    vmax = max(finite)
+    rng = vmax - vmin
+    if rng <= 0:
+        return [0.0 for _ in vals]
+    out = []
+    for v in vals:
+        if math.isfinite(v):
+            out.append((v - vmin) / rng)
+        else:
+            out.append(0.0)
+    return out
+
+
+def normalize_by_group(keys: Iterable[int], values: Iterable[float]) -> list[float]:
+    """Normalize values to [0,1] per group key using min-max per key.
+
+    keys: group identifier (e.g., example_index) for each value.
+    values: numeric values (e.g., amplitudes) to normalize.
+    Returns a list of normalized values aligned to input order.
+    """
+    import math
+    ks = [int(k) for k in keys]
+    vs = [float(v) for v in values]
+    groups = {}
+    for i,(k,v) in enumerate(zip(ks,vs)):
+        groups.setdefault(k, []).append(v)
+    mins = {}; maxs = {}
+    for k, arr in groups.items():
+        finite = [x for x in arr if math.isfinite(x)]
+        if finite:
+            mins[k] = min(finite)
+            maxs[k] = max(finite)
+        else:
+            mins[k] = 0.0; maxs[k] = 0.0
+    out=[]
+    for k,v in zip(ks,vs):
+        rng = maxs[k]-mins[k]
+        if not math.isfinite(v) or rng<=0:
+            out.append(0.0)
+        else:
+            out.append((v - mins[k])/rng)
+    return out
+
+
 
 def check_answer(answer: str, gt_answer: str) -> bool:
     """
