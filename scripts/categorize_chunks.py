@@ -138,14 +138,14 @@ def categorize_examples(
     output_dir: str,
     annotator_model: str = "qwen/qwen2.5-3b-instruct",
     max_examples: Optional[int] = None,
-    anchors_path_for_check: Optional[str] = None,
+    chunk_activations_path_for_check: Optional[str] = None,
     use_local: bool = False,
     local_model_id: str = "Qwen/Qwen2.5-3B-Instruct",
 ) -> str:
     """Categorize chunks directly from annotated dataset (CoT), verifying chunking against anchors if available.
 
     - generated_path: generated_data_{model}.json (un-annotated)
-    - anchors_path_for_check: optional path to steering_anchors_{model}.json; used only to sanity-check chunking parity.
+    - chunks_path_for_check: optional path to chunk_activations_{model}.json; used only to sanity-check chunking parity.
     - annotator_model: default to Qwen2.5-3B-Instruct via OpenRouter id 'qwen/qwen2.5-3b-instruct'.
     """
     if not os.path.exists(generated_path):
@@ -155,20 +155,20 @@ def categorize_examples(
     if max_examples is not None:
         generated = generated[:max_examples]
 
-    # Optionally load anchors (for parity check only)
-    anchors_examples: List[Dict] = []
-    if anchors_path_for_check and os.path.exists(anchors_path_for_check):
+    # Optionally load chunk activations (for parity check only)
+    chunk_activations_examples: List[Dict] = []
+    if chunk_activations_path_for_check and os.path.exists(chunk_activations_path_for_check):
         try:
-            with open(anchors_path_for_check, 'r') as f:
+            with open(chunk_activations_path_for_check, 'r') as f:
                 anc = json.load(f)
-            anchors_examples = anc.get('examples', [])
+            chunk_activations_examples = anc.get('examples', [])
         except Exception as e:
-            print(f"[warn] Could not load anchors for parity check: {e}")
+            print(f"[warn] Could not load chunk activations for parity check: {e}")
 
     # Attempt to infer model name for output naming
     model_name = ''
     try:
-        model_name = (anc.get('model') if anchors_examples else '') or ''
+        model_name = (anc.get('model') if chunk_activations_examples else '') or ''
     except Exception:
         model_name = ''
 
@@ -181,11 +181,11 @@ def categorize_examples(
         if not chunks:
             continue
 
-        # Parity check vs anchors if present
-        if anchors_examples and ex_idx < len(anchors_examples):
-            a_chunks = anchors_examples[ex_idx].get('chunks', [])
+        # Parity check vs chunk activations if present
+        if chunk_activations_examples and ex_idx < len(chunk_activations_examples):
+            a_chunks = chunk_activations_examples[ex_idx].get('chunks', [])
             if len(a_chunks) != len(chunks):
-                print(f"[warn] chunk count mismatch at example {ex_idx}: annotated={len(chunks)} vs anchors={len(a_chunks)}")
+                print(f"[warn] chunk count mismatch at example {ex_idx}: annotated={len(chunks)} vs chunk_activations={len(a_chunks)}")
             else:
                 # Spot-check a few positions for normalized equality
                 import random as _r
@@ -246,7 +246,7 @@ def categorize_examples(
     payload = {
         "model": model_name,
         "generated_path": generated_path,
-        "anchors_check_path": anchors_path_for_check,
+        "chunk_activations_check_path": chunk_activations_path_for_check,
         "annotator_model": annotator_model,
         "tagset": TA_FUNCTION_TAGS,
         "examples": results,
@@ -259,8 +259,8 @@ def categorize_examples(
 
 def _build_paths(model_name: str) -> (str, str):
     model_tag = model_name.replace('/', '-')
-    generated_path = os.path.join('generated_data', f'generated_data_{model_tag}.json')
-    output_dir = 'generated_data'
+    generated_path = os.path.join('data', f'generated_data_{model_tag}.json')
+    output_dir = 'data'
     return generated_path, output_dir
 
 
@@ -268,7 +268,7 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser(description="Categorize CoT chunks with TA-style function tags (from un-annotated generated CoT)")
     p.add_argument("--model", type=str, default="deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B")
     p.add_argument("--generated_path", type=str, default=None)
-    p.add_argument("--anchors_check_path", type=str, default=None, help="Optional anchors JSON to parity-check chunking")
+    p.add_argument("--chunks_check_path", type=str, default=None, help="Optional chunk-activations JSON to parity-check chunking")
     p.add_argument("--output_dir", type=str, default=None)
     p.add_argument("--annotator_model", type=str, default="qwen/qwen2.5-3b-instruct", help="Annotator model (OpenRouter id). Default: Qwen2.5-3B-Instruct")
     p.add_argument("--max_examples", type=int, default=None)
@@ -279,7 +279,7 @@ if __name__ == "__main__":
     generated_path, default_out = _build_paths(args.model)
     if args.generated_path:
         generated_path = args.generated_path
-    anchors_check = args.anchors_check_path
+    chunks_check = args.chunks_check_path
     out_dir = args.output_dir or default_out
 
     categorize_examples(
@@ -287,7 +287,7 @@ if __name__ == "__main__":
         output_dir=out_dir,
         annotator_model=args.annotator_model,
         max_examples=args.max_examples,
-        anchors_path_for_check=anchors_check,
+        chunk_activations_path_for_check=chunks_check,
         use_local=args.use_local,
         local_model_id=args.local_model_id,
     )

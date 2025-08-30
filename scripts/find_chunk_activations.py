@@ -3,11 +3,7 @@ import json
 import os
 from typing import Dict, List, Optional, Tuple
 
-# Try importing torch; allow dry-run without it
-try:
-    import torch  # type: ignore
-except Exception:  # pragma: no cover
-    torch = None  # type: ignore
+import torch
 
 from tqdm import tqdm
 
@@ -17,13 +13,12 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 
 def _device() -> str:
-    if torch is None:
-        return "cpu"
     if torch.cuda.is_available():
         return "cuda"
-    if torch.backends.mps.is_available():
+    elif torch.backends.mps.is_available():
         return "mps"
-    return "cpu"
+    else:
+        return "cpu"
 
 
 def _encode_full(tokenizer, text: str, device: str):
@@ -199,9 +194,6 @@ def find_chunk_steering_vectors(
     """
     Compute per-chunk steering vectors as the mean activations at a given layer
     over the token span of each CoT chunk (teacher-forced in-context forward pass).
-
-    Differs from experiments/find_steering_vectors.py by not using counterfactuals
-    and returning vectors for all chunks, not just the annotated thought anchor.
     """
     device = _device()
     print(f"Using device: {device}")
@@ -246,7 +238,7 @@ def find_chunk_steering_vectors(
             print("[warn] Skipped example: could not align chunks or missing fields")
 
     model_tag = model_name.replace('/', '-')
-    out_path = os.path.join(output_dir, f"steering_anchors_{model_tag}.json")
+    out_path = os.path.join(output_dir, f"chunk_activations_{model_tag}.json")
     payload = {
         "model": model_name,
         "layer": layer_idx,
@@ -255,13 +247,13 @@ def find_chunk_steering_vectors(
     }
     with open(out_path, "w") as f:
         json.dump(payload, f, indent=2)
-    print(f"Saved per-chunk steering vectors to {out_path}")
+    print(f"Saved per-chunk activations to {out_path}")
 
 
 def _build_paths(model_name: str) -> Tuple[str, str]:
     model_tag = model_name.replace('/', '-')
-    annotated_path = os.path.join("generated_data", f"generated_data_annotated_{model_tag}.json")
-    output_dir = os.path.join("generated_data")
+    annotated_path = os.path.join("data", f"annotated_data_{model_tag}.json")
+    output_dir = os.path.join("data")
     return annotated_path, output_dir
 
 
@@ -271,7 +263,7 @@ if __name__ == "__main__":
     parser.add_argument("--layer", type=int, default=None, help="Layer index for activations (default: last layer)")
     parser.add_argument("--max_examples", type=int, default=None)
     parser.add_argument("--annotated_path", type=str, default=None, help="Optional explicit path to annotated data JSON")
-    parser.add_argument("--output_dir", type=str, default=None, help="Optional output directory (default: generated_data)")
+    parser.add_argument("--output_dir", type=str, default=None, help="Optional output directory (default: data)")
     args = parser.parse_args()
 
     annotated_path, default_out = _build_paths(args.model)
@@ -286,4 +278,3 @@ if __name__ == "__main__":
         layer_idx=args.layer,
         max_examples=args.max_examples,
     )
-

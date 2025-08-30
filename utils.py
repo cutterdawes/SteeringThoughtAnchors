@@ -858,7 +858,7 @@ def compute_kl_curve_for_chunk(
     model,
     tokenizer,
     example: Dict,
-    anchors_ex: Dict,
+    chunk_activations_ex: Dict,
     *,
     layer_idx: int,
     betas: "np.ndarray",
@@ -895,7 +895,7 @@ def compute_kl_curve_for_chunk(
         return []
     base_steps = logits_full[:, start:start + n_eff, :]
     # per-chunk vector
-    vec_by_idx = {int(ch.get("chunk_index", 0)): ch.get("vector", []) for ch in anchors_ex.get("chunks", [])}
+    vec_by_idx = {int(ch.get("chunk_index", 0)): ch.get("vector", []) for ch in chunk_activations_ex.get("chunks", [])}
     v = torch.tensor(vec_by_idx.get(int(idx), []), dtype=torch.float32, device=device)
     if v.numel() == 0:
         return []

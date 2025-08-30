@@ -228,7 +228,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--output",
         type=str,
-        default="generated_data",
+        default="data",
         help=(
             "Directory to write outputs. Saves generated_data_{model}.json and "
             "ground_truth_math.json here."

@@ -435,7 +435,7 @@ if __name__ == "__main__":
         help=(
             "Hugging Face model id used for the counterfactual tests. "
             "Must match the model used to generate the input file so the script can locate "
-            "`generated_data/generated_data_{model.replace('/', '-')}.json`. "
+            "`data/annotated_data_{model.replace('/', '-')}.json`. "
             "Default: deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B."
         ),
     )
@@ -502,7 +502,7 @@ if __name__ == "__main__":
         help=(
             "Optional path to a JSON file mapping {prompt: ground-truth-answer}. "
             "If provided, correctness will be computed against this mapping; otherwise the script "
-            "will attempt to auto-detect `generated_data/ground_truth_math.json`."
+            "will attempt to auto-detect `data/ground_truth_math.json`."
         ),
     )
     args = parser.parse_args()
@@ -516,8 +516,8 @@ if __name__ == "__main__":
         device = "mps"
     else:
         device = "cpu"
-    input_path = os.path.join("generated_data", f"generated_data_{model_tag}.json")
-    output_path = os.path.join("generated_data", f"generated_data_annotated_{model_tag}.json")
+    input_path = os.path.join("data", f"data_{model_tag}.json")
+    output_path = os.path.join("data", f"data_{model_tag}.json")
 
     gt_map = None
     if args.ground_truth_json and os.path.exists(args.ground_truth_json):
@@ -525,7 +525,7 @@ if __name__ == "__main__":
             gt_map = json.load(f)
     else:
         # Auto-detect ground truth saved by generate_data when using --use_math
-        auto_gt = os.path.join("generated_data", "ground_truth_math.json")
+        auto_gt = os.path.join("data", "ground_truth_math.json")
         if os.path.exists(auto_gt):
             with open(auto_gt, 'r') as f:
                 gt_map = json.load(f)

@@ -4,6 +4,7 @@
 # ignore any __pycache__ directory anywhere in the tree
 __pycache__/
 **/__pycache__/
+.pytest_cache/
 
 # Jupyter
 # ignore Jupyter checkpoints anywhere in the repo
