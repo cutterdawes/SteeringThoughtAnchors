@@ -18,6 +18,9 @@ Notes and implementation choices vs. references:
 For more details and a cross-repo comparison, see docs/IMPLEMENTATION_NOTES.md.
 """
 
+import os
+os.environ.setdefault("TRANSFORMERS_NO_ACCELERATE", "1")
+
 import torch
 import json
 import os

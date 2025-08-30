@@ -1,91 +1,83 @@
-Implementation Notes and Reference Differences
+# Implementation Notes and Reference Differences
 
-Overview
-- This repo implements a two-stage workflow:
-  1) Data generation (Experiment 1): create (prompt, CoT, answer) tuples from MATH.
-  2) Thought-anchor annotation (Experiment 2): identify the most causally important CoT sentence via counterfactual removal.
+## Overview
+- Two-stage workflow:
+  - Data generation (Experiment 1): create (prompt, CoT, answer) tuples from MATH.
+  - Thought-anchor annotation (Experiment 2): identify the most causally important CoT sentence via counterfactual removal.
 
-This document summarizes how our implementation differs from the reference projects:
-- refs/thought-anchors (TA)
-- refs/steering-thinking-llms (STL)
+References compared against:
+- docs/refs/thought-anchors (TA)
+- docs/refs/steering-thinking-llms (STL)
 
-
-Recent Updates (August 2025)
+## Recent Updates (August 2025)
 - Resampling parity with base generation:
-  - After open resampling, we now run a forced-answer fallback if no \boxed{…} appears, mirroring base generation.
-  - The forced pass is seeded with the full open continuation (prefix + whole resampled continuation), not just the first resampled sentence.
+  - After open resampling, run a forced-answer fallback if no \boxed{…} appears, mirroring base generation.
+  - Forced pass is seeded with the full open continuation (prefix + resampled continuation).
 - Comparator parity with TA:
-  - Counterfactual KL now requires the next-chunk rollouts (next_solutions at i+1). The comparator is constructed as next_solutions(i+1) + similar (from the current chunk). If next_solutions is empty, KL is set to 0.0 and a warning is emitted; we do not fall back to similar-only.
+  - Counterfactual KL requires next-chunk rollouts (next_solutions at i+1). Comparator = next_solutions(i+1) + similar (from current chunk). If next_solutions is empty, KL = 0.0 (warn) — no similar-only fallback.
 - Token budget alignment:
-  - For open resampling, `max_new_tokens_open = max(1, 1000 − prefix_tokens)` so that existing CoT + new continuation ≤ 1000 tokens (matching base generation’s 1000 token cap).
+  - Open resampling budget: `max_new_tokens_open = max(1, 1000 − prefix_tokens)`; base generation uses `max_new_tokens=1000`.
 - Counterfactual accuracy handling:
-  - We removed the fallback that set per-chunk counterfactual accuracy to the baseline accuracy when similarity partitions were empty. Accuracy is now always computed from that chunk’s resamples; only KL uses a 0.0 fallback (with a warning) when partitions are empty.
+  - Removed fallback that copied baseline accuracy when partitions were empty; accuracy now always computed from the chunk’s resamples. Only KL can fall back to 0.0 (with a warning).
 - Answer punctuation cleanup:
-  - Added `cleanup_answer_punctuation(answer, gt_answer)`: if GT has no factorial, strip all ‘!’ from the candidate; if GT has factorial, collapse runs of ‘!’ to a single ‘!’. Also strip trailing sentence punctuation (., ?, …).
-  - Applied in both base generation (saved answers) and `check_answer` (comparison path) for robustness.
+  - `cleanup_answer_punctuation(answer, gt_answer)`: if GT has no factorial, strip ‘!’; if GT has factorial, collapse to single ‘!’. Also strip trailing sentence punctuation.
+  - Applied in base generation and `check_answer`.
 
-
-Experiment 1: Data Generation vs. STL
+## Experiment 1: Data Generation vs. STL
 - Prompting:
-  - Ours: Use the model’s chat template and expect a "<think>\n" prefix (e.g., DeepSeek-R1-Distill-Qwen). We compute `prompt_len` by subtracting the length of this prefix so that downstream parsing can isolate the generated text.
-  - STL: Often uses plain prompts without chat templates and focuses on steering rather than dataset construction.
+  - Ours: Use the model’s chat template and expect a "<think>\n" prefix (e.g., DeepSeek‑R1‑Distill‑Qwen). Compute `prompt_len` by subtracting this prefix length.
+  - STL: Often plain prompts without chat templates; focuses on steering rather than dataset construction.
 - Outputs:
-  - Ours: Persist `{prompt, raw_response, cot, answer}` (+ optional ground truth). No per-token activations or steering artifacts are saved here.
+  - Ours: Persist `{prompt, raw_response, cot, answer}` (+ optional ground truth). No per‑token activations or steering artifacts here.
   - STL: Provides mean vectors, steering configs, and patching utilities; not centered on MATH data collection.
 - Models and vectors:
-- Ours: `utils.load_model_and_vectors` loads an nnsight LanguageModel and, when present, mean vectors from `docs/refs/steering-thinking-llms` for convenience (warning emitted). We do not perform steering during data generation.
-
+  - Ours: `utils.load_model_and_vectors` loads an nnsight LanguageModel and, when present, mean vectors from `docs/refs/steering-thinking-llms` (warning emitted). No steering during data generation.
 - Normalization and cleanup:
-  - Ours: Uses `extract_boxed_answers` with nested-brace handling; answers are cleaned with `cleanup_answer_punctuation` before saving, preventing emphatic artifacts like `7!!!!!!!!`.
-  - STL: Focuses on steering; normalization/cleanup is not central to their data path.
+  - Ours: `extract_boxed_answers` with nested‑brace handling; `cleanup_answer_punctuation` prevents emphatic artifacts like `7!!!!!!!!`.
+  - STL: Normalization/cleanup not central to their data path.
 
-
-Experiment 2: Annotation vs. TA
+## Experiment 2: Annotation vs. TA
 - Chunking:
-  - Ours: `utils.split_solution_into_chunks` strips `<think>` tags and splits CoT (prompt excluded) into sentence/paragraph chunks, merging very small fragments.
-  - TA: Similar TA-style chunking with checks against their chunk artifacts.
-- Baseline and pseudo-GT:
-  - Ours: If dataset ground-truth is absent, derive a pseudo-GT as the most common normalized answer from baseline forced answers on the full CoT.
-  - TA: Uses their rollout dataset and stored GT; may not rely on pseudo-GT.
+  - Ours: `utils.split_solution_into_chunks` strips `<think>` and splits CoT (prompt excluded) into sentence/paragraph chunks, merging very small fragments.
+  - TA: Similar TA‑style chunking with checks against their chunk artifacts.
+- Baseline and pseudo‑GT:
+  - Ours: If dataset GT is absent, derive a pseudo‑GT as the most common normalized answer from baseline forced answers on the full CoT.
+  - TA: Uses rollout dataset and stored GT; may not rely on pseudo‑GT.
 - Counterfactual removal protocol:
-  - Ours: For each sentence i, remove it, sample multiple continuations from the prefix up to i, store one representative counterfactual answer, and compute per-chunk metrics.
-  - TA: Generates and persists detailed rollout artifacts per chunk (solutions.json), enabling broader analyses.
+  - Ours: For each sentence i, remove it, sample multiple continuations from the prefix up to i, record one representative counterfactual answer, and compute per‑chunk metrics.
+  - TA: Generates and persists detailed rollout artifacts per chunk (solutions.json).
 - Similar vs. dissimilar split:
-  - Ours: Cosine similarity between the removed sentence and the first resampled sentence using the reasoning model’s last-layer mean embeddings; threshold 0.8.
- - TA: Uses SentenceTransformer embeddings (e.g., all-MiniLM-L6-v2) for similarity; threshold also ~0.8.
-- Importance metric used for anchor selection:
-  - Ours: Counterfactual KL on correctness (P(true/false)) for dissimilar vs. comparator sets. Comparator = similar + next-sentence (i+1) resamples when available. Laplace smoothing enabled.
-  - TA: Also constructs comparator sets and computes KL divergence; defaults to answer-distribution KL and optionally includes/excludes similar. Smoothing typically off by default.
-  - Parity note: Our comparator now exactly matches TA’s structure and requirement for next_solutions (we include similar alongside next_solutions; if next_solutions is empty, KL=0.0 and a warning is logged).
-- Other metrics (not currently used for selection):
-  - Ours: Store `counterfactual_accuracies` (aggregate accuracy at each i), `different_trajectories_fraction` (share of dissimilar resamples), and `overdeterminedness` (diversity proxy). We do not compute forced/resampling importance metrics.
-  - TA: Additionally analyzes `forced_importance_*` and `resampling_importance_*`, and supports rich plotting/variance analyses using cached rollout artifacts.
-
+  - Ours: Cosine similarity between the removed sentence and the first resampled sentence using the reasoning model’s last‑layer mean embeddings; threshold 0.8.
+  - TA: SentenceTransformer embeddings (e.g., all‑MiniLM‑L6‑v2); threshold ~0.8.
+- Importance metric for anchor selection:
+  - Ours: Counterfactual KL on correctness (P(true/false)) for dissimilar vs. comparator sets. Comparator = similar + next‑sentence (i+1); Laplace smoothing enabled.
+  - TA: Often answer‑distribution KL, optionally includes/excludes similar; smoothing typically off.
+  - Parity note: Our comparator matches TA’s structure and requirement for next_solutions; if missing, KL = 0.0 (warn).
+- Other metrics (not used for selection):
+  - Ours: `counterfactual_accuracies`, `different_trajectories_fraction`, `overdeterminedness`.
+  - TA: Adds `forced_importance_*` and `resampling_importance_*` with richer cached artifacts.
 - Token budgets and modes:
-  - Ours: Open resampling budget is dynamically capped (`1000 − prefix_tokens`) and falls back to a forced-answer pass when no box is produced. Base generation uses max_new_tokens=1000.
-  - TA: Default `max_tokens` for generation is much larger (e.g., 16384 in `generate_rollouts.py`), and they expose separate “default” vs “forced_answer” modes; we now approximate their forced-answer behavior for resampling while keeping a lighter token budget.
+  - Ours: Open resampling capped (`1000 − prefix_tokens`); forced‑answer fallback when no box. Base generation uses `max_new_tokens=1000`.
+  - TA: Much larger `max_tokens` (e.g., 16384); explicit “default” vs “forced_answer” modes.
 
-
-Design Trade-offs
-- Embedding choice (model last-layer vs. sentence-transformer): favors fewer dependencies and tighter coupling to the evaluated model at the cost of cross-model comparability.
-- KL over correctness vs. answer distribution: simplifies distributions and stabilizes with Laplace smoothing, but discards fine-grained answer diversity.
-- Artifact footprint: single JSON with per-chunk aggregates (lightweight) vs. per-chunk solution logs (heavyweight but richer diagnostics).
-
-
-Experiment 2.5: Per‑Chunk Activations vs. STL
+## Experiment 2.5: Per‑Chunk Activations vs. STL
 - Vector definition:
-  - Ours: `scripts/find_chunk_activations.py` computes mean activation vectors at a chosen layer over the token span of each CoT chunk (teacher‑forced forward pass). Vectors are L2‑normalized.
-  - STL: Provides reference steering vectors and configs keyed to capabilities (e.g., backtracking). Their vectors are generally derived from curated positive/negative sets rather than per‑example chunks.
+  - Ours: `scripts/find_chunk_activations.py` computes mean activation vectors at a chosen layer over each CoT chunk’s token span (teacher‑forced). L2‑normalized.
+  - STL: Reference steering vectors keyed to capabilities (e.g., backtracking), typically from curated positive/negative sets.
 - Counterfactual sampling:
-  - Ours: Does not sample counterfactuals in this step; it records per‑chunk means used for downstream analysis and steering experiments.
-  - STL: Emphasizes applying precomputed steering directions rather than deriving per‑example vectors.
+  - Ours: No counterfactual sampling in this step; records per‑chunk means for downstream analysis/steering.
+  - STL: Emphasizes applying precomputed directions.
 - Practicalities:
-  - Ours: Runs via standard forward passes; relies on nnsight to access hidden states.
-  - STL: Focused on running/applying steering rather than deriving vectors per example.
+  - Ours: Standard forward passes; nnsight to read hidden states.
+  - STL: Focused on applying steering rather than deriving per‑example vectors.
 
+## Design Trade‑offs
+- Model last‑layer embeddings vs. sentence‑transformers: fewer deps, tighter coupling vs. cross‑model comparability.
+- Correctness‑KL with smoothing vs. answer distribution: stability vs. granularity.
+- Lightweight per‑chunk aggregates vs. heavier per‑chunk solution logs.
 
-Repro Tips
-- Always activate the conda env: `conda activate anchorsteering`.
-- For annotation speed/variance, tune `--resamples` and consider reducing `max_sentences` for quick sanity checks.
-- When comparing to TA exactly, consider swapping in SentenceTransformer embeddings and computing answer-distribution KL without smoothing.
-- When comparing to STL steering behavior, use the provided `steering_config` in `utils.py` and note that our per-example anchor vectors are conceptually different from their global capability vectors.
+## Repro Tips
+- Activate env: `conda activate anchorsteering`.
+- For speed/variance, tune `--resamples`; optionally limit `--max_sentences`.
+- For TA parity, consider SentenceTransformer embeddings and answer‑distribution KL (no smoothing).
+- For STL comparisons, see `steering_config` in `utils.py`; note per‑example anchors vs. global capability vectors.

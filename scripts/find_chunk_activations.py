@@ -1,3 +1,6 @@
+import os
+os.environ.setdefault("TRANSFORMERS_NO_ACCELERATE", "1")
+
 import argparse
 import json
 import os

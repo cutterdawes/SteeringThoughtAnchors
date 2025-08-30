@@ -1,3 +1,9 @@
+import os
+
+# Ensure we don't pull in accelerate at import time unless explicitly desired
+# This avoids circular-import issues from mismatched transformers/accelerate versions.
+os.environ.setdefault("TRANSFORMERS_NO_ACCELERATE", "1")
+
 import dotenv
 dotenv.load_dotenv("../.env")
 
@@ -11,7 +17,7 @@ import random
 import torch.nn as nn
 import openai
 import anthropic
-import os
+import os as _os  # already imported above for env flags
 from openai import OpenAI
 import json
 import re

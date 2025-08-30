@@ -14,7 +14,7 @@ Brief project description and quickstart for the “thought anchors” + activat
 - `utils.py`: shared model/prompt/activation utilities
 
 ## Quickstart
-- Create env: `conda env create -f environment.yml && conda activate steering-thought-anchors`
+- Create env: `conda env create -f environment.yml && conda activate anchorsteering`
 - Generate: `python scripts/generate_data.py --model deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B --count 1 --output data`
 - Annotate: `python scripts/annotate_data.py --model deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B --max_examples 1`
 - Chunk activations: `python scripts/find_chunk_activations.py --model deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B --max_examples 1`

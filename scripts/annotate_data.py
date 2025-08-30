@@ -33,8 +33,11 @@ Key differences from refs/thought-anchors:
 For a complete comparison, see docs/IMPLEMENTATION_NOTES.md.
 """
 
-import json
 import os
+os.environ.setdefault("TRANSFORMERS_NO_ACCELERATE", "1")
+
+import json
+import os as _os2  # real os already imported above
 import re
 import argparse
 from typing import List, Tuple, Optional, Dict
