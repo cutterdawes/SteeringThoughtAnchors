@@ -33,7 +33,7 @@ Experiment 1: Data Generation vs. STL
   - Ours: Persist `{prompt, raw_response, cot, answer}` (+ optional ground truth). No per-token activations or steering artifacts are saved here.
   - STL: Provides mean vectors, steering configs, and patching utilities; not centered on MATH data collection.
 - Models and vectors:
-  - Ours: `utils.load_model_and_vectors` loads an nnsight LanguageModel and, when present, mean vectors from `refs/steering-thinking-llms` for convenience (warning emitted). We do not perform steering during data generation.
+- Ours: `utils.load_model_and_vectors` loads an nnsight LanguageModel and, when present, mean vectors from `docs/refs/steering-thinking-llms` for convenience (warning emitted). We do not perform steering during data generation.
 
 - Normalization and cleanup:
   - Ours: Uses `extract_boxed_answers` with nested-brace handling; answers are cleaned with `cleanup_answer_punctuation` before saving, preventing emphatic artifacts like `7!!!!!!!!`.
@@ -72,15 +72,15 @@ Design Trade-offs
 - Artifact footprint: single JSON with per-chunk aggregates (lightweight) vs. per-chunk solution logs (heavyweight but richer diagnostics).
 
 
-Experiment 2.5: Steering Vectors vs. STL
+Experiment 2.5: Per‑Chunk Activations vs. STL
 - Vector definition:
-  - Ours: `experiments/find_steering_vectors.py` computes v = mean(layer activations on the anchor sentence) − mean(layer activations on sampled counterfactual sentences) at a chosen layer; vectors are L2-normalized.
-  - STL: Provides reference steering vectors and configs keyed to capabilities (e.g., backtracking). Their vectors are generally derived from curated positive/negative sets rather than per-example anchors.
+  - Ours: `scripts/find_chunk_activations.py` computes mean activation vectors at a chosen layer over the token span of each CoT chunk (teacher‑forced forward pass). Vectors are L2‑normalized.
+  - STL: Provides reference steering vectors and configs keyed to capabilities (e.g., backtracking). Their vectors are generally derived from curated positive/negative sets rather than per‑example chunks.
 - Counterfactual sampling:
-  - Ours: Samples counterfactual sentences from the prefix up to anchor, filters by dissimilarity to the anchor sentence using last-layer embeddings, and averages accepted activations.
-  - STL: Emphasizes applying precomputed steering directions rather than sampling-based per-example vectors.
+  - Ours: Does not sample counterfactuals in this step; it records per‑chunk means used for downstream analysis and steering experiments.
+  - STL: Emphasizes applying precomputed steering directions rather than deriving per‑example vectors.
 - Practicalities:
-  - Ours: Includes a `--dry_run` mode that produces deterministic pseudo-vectors (testing only). Real runs rely on nnsight traces to read hidden states.
+  - Ours: Runs via standard forward passes; relies on nnsight to access hidden states.
   - STL: Focused on running/applying steering rather than deriving vectors per example.
 
 

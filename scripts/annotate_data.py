@@ -516,8 +516,9 @@ if __name__ == "__main__":
         device = "mps"
     else:
         device = "cpu"
-    input_path = os.path.join("data", f"data_{model_tag}.json")
-    output_path = os.path.join("data", f"data_{model_tag}.json")
+    # Default inputs/outputs follow repository naming under data/
+    input_path = os.path.join("data", f"generated_data_{model_tag}.json")
+    output_path = os.path.join("data", f"annotated_data_{model_tag}.json")
 
     gt_map = None
     if args.ground_truth_json and os.path.exists(args.ground_truth_json):

@@ -1,46 +1,37 @@
 # Steering Thought Anchors
 
-**Cutter Dawes, Santiago Aranguri**
+Brief project description and quickstart for the “thought anchors” + activation steering prototype. For details and results, see docs/Bridging Features and Tokens (MATS).pdf and docs/IMPLEMENTATION_NOTES.md.
 
-Previous work has found evidence of “thought anchors”, reasoning steps that have outsized importance for downstream steps in the model’s chain of thought (CoT; Bogdan+ 2025); separately, others have experimented with steering the CoT towards specific reasoning behaviors, such as backtracking (Venhoff+ 2025). Here, I propose that we apply CoT steering to thought anchors, in order to study their emergence and downstream importance. To investigate, we might steer activations at two points relative to a given thought anchor: just before, to measure the spontaneity of its emergence; and immediately after, to measure the durability of its downstream importance. For both cases, the steering vector could be constructed by subtracting the average activation of sampled counterfactual sentences from the activation of the thought anchor. This research idea directly probes the transience of thought: do we see thought anchors arise smoothly with translations in activation space, or are there phase transitions in which thought anchors (and their downstream impacts on CoT) spontaneously emerge and disappear?
+## Repo Structure
+- `scripts/`: data and analysis scripts
+  - `generate_data.py`: create (prompt, CoT, answer) tuples from MATH
+  - `annotate_data.py`: select thought‑anchor sentences via counterfactuals
+  - `find_chunk_activations.py`: per‑chunk mean activation vectors (teacher‑forced)
+  - `categorize_chunks.py`: TA‑style function tags for CoT chunks
+- `data/`: generated artifacts and figures (JSON, PNG)
+- `notebooks/`: exploration and plots for anchors and activations
+- `docs/refs/`: external references used for context
+- `utils.py`: shared model/prompt/activation utilities
 
-## Background
-- “Thought Anchors: Which LLM Reasoning Steps Matter?” (Bogdan+ 2025) investigates the existence of thought anchors, or “reasoning steps that have outsized importance and that disproportionately influence the subsequent reasoning process”
-- Uses three methods: (i) counterfactual importance sampled over CoT rollouts, (ii) aggregating attention patterns by sentence, and (iii) causal attribution by suppressing sentence-level attention
-- “Understanding reasoning in thinking language models via steering vectors” (Venhoff+ 2025) experiments with steering CoTs with vectors representing specific reasoning behaviors (e.g., backtracking, expressing uncertainty)
-- Finds that reasoning behaviors are mediated by linear directions in latent space, and that steering in these directions can effectively control CoT
+## Quickstart
+- Create env: `conda env create -f environment.yml && conda activate steering-thought-anchors`
+- Generate: `python scripts/generate_data.py --model deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B --count 1 --output data`
+- Annotate: `python scripts/annotate_data.py --model deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B --max_examples 1`
+- Chunk activations: `python scripts/find_chunk_activations.py --model deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B --max_examples 1`
+- Categorize chunks: `python scripts/categorize_chunks.py --model deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B --max_examples 1`
 
-## Experiments
-1.  **Preliminaries:**
-        <ol type="a">
-            <li>Collect a dataset of (prompt, CoT, answer, activations) tuples—could be from Bogdan+ and/or Venhoff+</li>
-            <li>Annotate the dataset with the thought anchors in the CoT</li>
-        </ol>
-2.  **Finding thought anchor steering vectors:**
-        <ol type="a">
-            <li>For a given thought anchor sentence, take its average activation (a_anchor) and the average activations of sampled counterfactual replacement sentences (a_counter)
-                <ol type="i">
-                    <li>The counterfactual replacement sentence could be obtained by a similar procedure to Bogdan+: resampling just before the thought anchor sentence, conditioned on a minimum threshold of dissimilarity to the thought anchor</li>
-                    <li>Choose the steering vector from the most causally relevant layer (test via patching)</li>
-                </ol>
-            </li>
-            <li>The steering vector is then: v = a_anchor - a_counter (in practice, we’ll probably normalize)</li>
-        </ol>
-3.  **Transience (or not) of thought anchors:**
-        <ol type="a">
-            <li>Just before the thought anchor sentence, if we steer the activations (a) by a + βv for β < 0, then how will the logits change as a function of β? We can measure this concretely using the KL divergence from the original logits (producing the thought anchor). Will we see a sharp jump in KL divergence (indicating a high degree of transience and a possible phase transition) or a gradual rise (indicating some degree of contingence/predictability)</li>
-            <li>What if we steer with β > 0 at other points in the CoT? Will the same or a similar thought anchor appear there too?</li>
-        </ol>
-4.  **Effect on downstream CoT:**
-        <ol type="a">
-            <li>This time after the thought anchor sentence (either throughout the remaining CoT, immediately after the thought anchor, or in the final answer) and varying β ∈ [-1, 0], measure the KL divergence between the original and resampled logits (again, either throughout the remaining CoT, immediately after the thought anchor, or in the final answer)</li>
-            <li>Do we see a gradual rise in KL divergence as we vary β, or do we see a sharp transition?</li>
-            <li>How does attentional structure change? Is there a gradual reduction in the thought anchor broadcasting, or a sharp transition?</li>
-        </ol>
+Artifacts are written under `data/` with names like:
+- `generated_data_{model}.json`, `annotated_data_{model}.json`
+- `chunk_activations_{model}.json`, `chunk_categories_{model}.json`
+- figures in `data/figures/`
 
-## Notes
-In general for this project outline, I thought it better to go into too much detail (which we can backtrack) than too little. This is just one research direction based on your Problem 1, and I am open to a variety of other directions—even including starting from scratch—so please don’t be shy to edit and comment as much as you want!
-Also, this idea represents a substantial research project that is likely infeasible for the trial period (through 9/1). As I mentioned, I would rather give too much detail than too little, so I’d love to hear your suggestions on tangible starting points (if you like this idea; if not, feel free to suggest a different starting point). What I’m currently thinking is to start with a relatively simple fixed question, CoT, and thought anchor, and experiment with the ideas above in that limited example. Please let me know what you think!
+## Results (Summary)
+Highlights from the write‑up (see the PDF for figures and details):
+- Thought anchors: selected via counterfactual removal and correctness‑KL; anchors are causally salient under our metrics.
+- Chunk activations: mean activation vectors over CoT chunks support clustering/visualization and downstream steering experiments.
+- Steering behavior: per‑chunk/anchor directions modulate model behavior in controlled ways; KL curves provide interpretable dose–response.
 
-## Implementation Notes
-For specifics on how our data generation and annotation differ from the reference repositories (Thought Anchors and Steering Thinking LLMs), see `docs/IMPLEMENTATION_NOTES.md`.
+## References & Notes
+- Implementation differences vs. refs: `docs/IMPLEMENTATION_NOTES.md`
+- External repos mirrored under `docs/refs/`
+- API keys via env: `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `OPENROUTER_API_KEY`

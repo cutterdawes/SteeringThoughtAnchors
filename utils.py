@@ -349,11 +349,11 @@ def load_model_and_vectors(device="cuda:0", load_in_8bit=False, compute_features
     # Get model identifier for file naming
     model_id = model_name.split('/')[-1].lower()
     
-    # Prefer project-local generated vectors; avoid coupling to refs/
+    # Prefer project-local generated vectors; avoid coupling to docs/refs
     # Primary path (project-owned artifacts):
-    local_vector_path = f"generated_data/mean_vectors_{model_id}.pt"
+    local_vector_path = f"data/mean_vectors_{model_id}.pt"
     # Legacy fallback (reference repo artifacts):
-    legacy_vector_path = f"refs/steering-thinking-llms/train-steering-vectors/results/vars/mean_vectors_{model_id}.pt"
+    legacy_vector_path = f"docs/refs/steering-thinking-llms/train-steering-vectors/results/vars/mean_vectors_{model_id}.pt"
 
     mean_vectors_dict = {}
     feature_vectors = {}
@@ -362,8 +362,8 @@ def load_model_and_vectors(device="cuda:0", load_in_8bit=False, compute_features
         mean_vectors_dict = torch.load(local_vector_path)
     elif os.path.exists(legacy_vector_path):
         print(
-            f"Warning: Loading mean vectors from refs ({legacy_vector_path}). "
-            f"Consider copying to {local_vector_path} to decouple from refs/."
+            f"Warning: Loading mean vectors from docs/refs ({legacy_vector_path}). "
+            f"Consider copying to {local_vector_path} to decouple from docs/refs/."
         )
         mean_vectors_dict = torch.load(legacy_vector_path)
     
