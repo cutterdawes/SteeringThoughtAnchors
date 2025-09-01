@@ -302,17 +302,20 @@ def decode_generate_outputs(tokenizer, outputs, *, skip_special_tokens: bool = T
             return ""
 
 
-def load_model_and_vectors(device="cuda:0", load_in_8bit=False, compute_features=True, normalize_features=True, model_name="deepseek-ai/DeepSeek-R1-Distill-Llama-8B", base_model_name=None):
+def load_model_and_vectors(
+    device: str = "cuda:0",
+    load_in_8bit: bool = False,
+    compute_features: bool = True,
+    normalize_features: bool = True,  # kept for API compatibility (no-op)
+    model_name: str = "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+    base_model_name: str | None = None,  # kept for API compatibility (ignored)
+):
     """
-    Load model, tokenizer and mean vectors. Optionally compute feature vectors.
-    
-    Args:
-        load_in_8bit (bool): If True, load the model in 8-bit mode
-        compute_features (bool): If True, compute and return feature vectors by subtracting overall mean
-        normalize_features (bool): If True, normalize the feature vectors
-        return_steering_vector_set (bool): If True, return the steering vector set
-        model_name (str): Name/path of the model to load
-        base_model_name (str): Name/path of the base model to load
+    Load a single model and tokenizer via nnsight. Mean vectors and base-model
+    loading are intentionally removed in this project.
+
+    Returns a 3-tuple for backward compatibility:
+      (model, tokenizer, {}) — the third element is an empty dict placeholder.
     """
     # Configure compilation behavior before constructing the model
     _configure_nnsight_compile(device)
@@ -338,76 +341,8 @@ def load_model_and_vectors(device="cuda:0", load_in_8bit=False, compute_features
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "left"
 
-    if base_model_name is not None:
-        base_model = LanguageModel(base_model_name, dispatch=True, load_in_8bit=load_in_8bit, device_map=device, torch_dtype=torch.bfloat16)
-        try:
-            if not (isinstance(device, str) and device.lower().startswith("cuda")):
-                if hasattr(base_model, "compile_config"):
-                    base_model.compile_config = None
-        except Exception:
-            pass
-    
-        base_model.generation_config.temperature=None
-        base_model.generation_config.top_p=None
-        base_model.generation_config.do_sample=False
-        
-        base_tokenizer = base_model.tokenizer
-
-        if "llama" in base_model_name.lower():
-            base_tokenizer.pad_token_id = base_tokenizer.finetune_right_pad_id
-            base_tokenizer.pad_token = base_tokenizer.finetune_right_pad
-            base_tokenizer.padding_side = "right"
-        else:
-            base_tokenizer.pad_token_id = base_tokenizer.eos_token_id
-            base_tokenizer.pad_token = base_tokenizer.eos_token
-            base_tokenizer.padding_side = "left"
-
-    # Get model identifier for file naming
-    model_id = model_name.split('/')[-1].lower()
-    
-    # Prefer project-local generated vectors; avoid coupling to docs/refs
-    # Primary path (project-owned artifacts):
-    local_vector_path = f"data/mean_vectors_{model_id}.pt"
-    # Legacy fallback (reference repo artifacts):
-    legacy_vector_path = f"docs/refs/steering-thinking-llms/train-steering-vectors/results/vars/mean_vectors_{model_id}.pt"
-
-    mean_vectors_dict = {}
-    feature_vectors = {}
-
-    if os.path.exists(local_vector_path):
-        mean_vectors_dict = torch.load(local_vector_path)
-    elif os.path.exists(legacy_vector_path):
-        print(
-            f"Warning: Loading mean vectors from docs/refs ({legacy_vector_path}). "
-            f"Consider copying to {local_vector_path} to decouple from docs/refs/."
-        )
-        mean_vectors_dict = torch.load(legacy_vector_path)
-    
-    if mean_vectors_dict and compute_features:
-        # Compute feature vectors by subtracting overall mean
-        feature_vectors = {}
-        feature_vectors["overall"] = mean_vectors_dict["overall"]['mean']
-        
-        for label in ["initializing", "deduction", "adding-knowledge", "example-testing", "uncertainty-estimation", "backtracking"]:
-
-            if label != 'overall':
-                feature_vectors[label] = mean_vectors_dict[label]['mean'] - mean_vectors_dict["overall"]['mean']
-
-            if normalize_features:
-                for label in feature_vectors:
-                    for layer in range(model.config.num_hidden_layers):
-                        feature_vectors[label][layer] = feature_vectors[label][layer] * (feature_vectors["overall"][layer].norm() / feature_vectors[label][layer].norm())
-    elif not mean_vectors_dict:
-        print(f"No mean vectors found for {model_name}. You can save to {local_vector_path}.")
-
-    if base_model_name is not None and compute_features:
-        return model, tokenizer, base_model, base_tokenizer, feature_vectors
-    elif base_model_name is not None and not compute_features:
-        return model, tokenizer, base_model, base_tokenizer, mean_vectors_dict
-    elif base_model_name is None and compute_features:
-        return model, tokenizer, feature_vectors
-    else:
-        return model, tokenizer, mean_vectors_dict
+    # Mean vectors and base-model flows removed: always return (model, tokenizer, {})
+    return model, tokenizer, {}
 
 def custom_generate_steering(model, tokenizer, input_ids, max_new_tokens, label, feature_vectors, steering_config, steer_positive=False):
     """
