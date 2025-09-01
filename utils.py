@@ -7,24 +7,22 @@ os.environ.setdefault("TRANSFORMERS_NO_ACCELERATE", "1")
 import dotenv
 dotenv.load_dotenv("../.env")
 
-import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM
-from nnsight import LanguageModel
-from tqdm import tqdm
+# Defer heavy third-party imports to function scope to avoid circular-import
+# issues when other packages import a top-level `utils`.
+try:  # provide a soft torch handle for lightweight helpers
+    import torch  # type: ignore
+except Exception:  # pragma: no cover
+    torch = None  # type: ignore
+
 import gc
 import time
 import random
-import torch.nn as nn
-import openai
-import anthropic
 import os as _os  # already imported above for env flags
-from openai import OpenAI
 import json
 import re
 import numpy as np
 import traceback
 from typing import List, Tuple, Optional, Dict
-from datasets import load_dataset
 
 
 def chat(prompt, model="gpt-4.1", max_tokens=28000):
@@ -32,9 +30,12 @@ def chat(prompt, model="gpt-4.1", max_tokens=28000):
     model_provider = ""
 
     if model in ["gpt-4o", "gpt-4.1"]:
+        # Lazy import to avoid importing openai client at module import time
+        from openai import OpenAI  # type: ignore
         model_provider = "openai"
         client = OpenAI()
     elif model in ["claude-3-opus", "claude-3-7-sonnet", "claude-3-5-haiku"]:
+        import anthropic  # type: ignore
         model_provider = "anthropic"
         client = anthropic.Anthropic()
     elif "deepseek" in model or "gemini" in model or "qwen" in model or "meta-llama" in model:
@@ -50,6 +51,7 @@ def chat(prompt, model="gpt-4.1", max_tokens=28000):
     for _ in range(3):
         try:
             if model_provider == "openai":
+                from openai import OpenAI  # type: ignore
                 client = OpenAI()
                 response = client.chat.completions.create(
                     model=model,
@@ -233,12 +235,17 @@ def _is_nnsight_model(model) -> bool:
         return False
 
 
-def generate_with_model(model, tokenizer, *, input_ids: torch.Tensor, attention_mask: torch.Tensor, **gen_kwargs):
+def generate_with_model(model, tokenizer, *, input_ids, attention_mask, **gen_kwargs):
     """Run text generation robustly across nnsight/HF backends.
 
     Returns the raw generation output object (tensor-like or ModelOutput). Use
     `decode_generate_outputs` to obtain text reliably.
     """
+    # Import torch lazily to avoid top-level dependency
+    try:
+        import torch  # type: ignore  # noqa: F401
+    except Exception:
+        pass
     if _is_nnsight_model(model):
         # nnsight path: use context manager and save the generated sequences
         payload = {"input_ids": input_ids, "attention_mask": attention_mask}
@@ -309,6 +316,9 @@ def load_model_and_vectors(device="cuda:0", load_in_8bit=False, compute_features
     """
     # Configure compilation behavior before constructing the model
     _configure_nnsight_compile(device)
+    # Lazy import to avoid importing nnsight/transformers at module import time
+    from nnsight import LanguageModel  # type: ignore
+    import torch  # type: ignore
     model = LanguageModel(model_name, dispatch=True, load_in_8bit=load_in_8bit, device_map=device, torch_dtype=torch.bfloat16)
     # Explicitly disable compile config on unsupported devices to silence warnings
     try:
@@ -659,7 +669,7 @@ def get_chunk_ranges(full_text: str, chunks: List[str]) -> List[Tuple[int, int]]
 
 
 def get_chunk_token_ranges(
-    text: str, chunk_ranges: List[Tuple[int, int]], tokenizer: AutoTokenizer
+    text: str, chunk_ranges: List[Tuple[int, int]], tokenizer
 ) -> List[Tuple[int, int]]:
     """Convert character positions to token indices"""
     chunk_token_ranges = []
@@ -1313,6 +1323,8 @@ def load_math_problems(
         List of problems with their original indices
     """
     try:
+        # Lazy import to avoid importing datasets at module import time
+        from datasets import load_dataset  # type: ignore
         # Load from Hugging Face dataset
         math_dataset = load_dataset("fdyrd/math")
         dataset_split = math_dataset[split]
