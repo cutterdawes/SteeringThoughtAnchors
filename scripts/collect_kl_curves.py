@@ -310,6 +310,9 @@ class CurveRec:
     importance: float
     ys: List[float]
     layer: Optional[int] = None  # for perturbation outputs
+    # For perturb mode, also store per-direction KLs for each epsilon
+    # Shape: [n_eps][n_directions]; None for steering entries
+    ys_dirs: Optional[List[List[float]]] = None
 
 
 def collect_steer_curves(
@@ -673,9 +676,11 @@ def collect_perturb_curves(
 
             for L in layers:
                 y_curve: List[float] = []
+                y_dirs: List[List[float]] = []
                 for eps in epsilons:
                     if abs(float(eps)) < 1e-12:
                         y_curve.append(0.0)
+                        y_dirs.append([0.0] * int(n_directions))
                         continue
                     dir_kls = []
                     for _ in range(int(n_directions)):
@@ -692,8 +697,10 @@ def collect_perturb_curves(
                         V = steered_span_cpu.shape[-1]
                         kl_t = _kl(steered_span_cpu.reshape(-1, V), base_span_cpu.reshape(-1, V))
                         dir_kls.append(float(kl_t.mean().item()))
+                    # Save both the average across directions and the per-direction values
                     y_curve.append(sum(dir_kls)/len(dir_kls) if dir_kls else 0.0)
-                curves.append(CurveRec(example_index=ex_i, chunk_index=idx, importance=imp, ys=y_curve, layer=int(L)))
+                    y_dirs.append(dir_kls if dir_kls else [0.0] * int(n_directions))
+                curves.append(CurveRec(example_index=ex_i, chunk_index=idx, importance=imp, ys=y_curve, layer=int(L), ys_dirs=y_dirs))
 
     return {
         'model': model_name,
